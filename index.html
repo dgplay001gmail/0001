@@ -612,11 +612,11 @@
         function submitProject() {
             const submitBtn = document.getElementById('submitProject');
             const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Submitted!';
+            submitBtn.textContent = '提交成功';
             
             setTimeout(() => {
                 document.getElementById('projectSection').style.display = 'none';
-                submitBtn.textContent = 'Submit Project ID'; // Reset text
+                submitBtn.textContent = '確認提交'; // Reset text
                 
                 // ** Increment Project ID here **
                 updateProjectId();
