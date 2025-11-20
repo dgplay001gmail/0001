@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI semiconductor manufacturing process</title>
+    <title>AI Semiconductor Manufacturing Process</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* CSS 樣式區域 (大部分保持不變) */
+        /* CSS Styles */
         * {
             margin: 0;
             padding: 0;
@@ -99,7 +99,6 @@
 
         .chip-container {
             width: 100%;
-            /* 調整高度以適應 model-viewer */
             height: 600px; 
             background-color: #0f0f2a;
             border: 1px solid #2a2a5a;
@@ -110,21 +109,16 @@
             box-shadow: 0 0 25px rgba(0, 100, 255, 0.3);
         }
 
-        /* 替換 Three.js 容器為 model-viewer */
         model-viewer {
             width: 100%;
             height: 100%;
-            background-color: #0f0f2a; /* 確保背景顏色一致 */
+            background-color: #0f0f2a;
         }
         
-        /* 由於改用 model-viewer，這些 Three.js 相關的浮動控制項將被移除或不再運作 */
         .chip-overlay, .chip-controls, .chip-speed-indicator {
             display: none !important; 
         }
 
-        /* ------------------ (以下是Chart.js和UI的樣式，保留代碼/表格相關) ------------------ */
-
-        /* 代码编辑器默认隐藏 */
         .code-editor-container {
             width: 100%;
             height: 200px;
@@ -134,7 +128,7 @@
             overflow: hidden;
             position: relative;
             box-shadow: 0 0 15px rgba(0, 200, 255, 0.2);
-            display: none; /* 默认隐藏 */
+            display: none; 
         }
 
         .code-header {
@@ -200,21 +194,6 @@
             white-space: pre-wrap;
         }
 
-        .code-cursor {
-            display: inline-block;
-            width: 8px;
-            height: 16px;
-            background-color: #00ffaa;
-            margin-left: 2px;
-            animation: blink 1s infinite;
-            vertical-align: middle;
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-
         .keyword { color: #ff79c6; }
         .function { color: #50fa7b; }
         .variable { color: #8be9fd; }
@@ -223,7 +202,6 @@
         .comment { color: #6272a4; }
         .operator { color: #ff79c6; }
 
-        /* AI优化完成提示 */
         .ai-optimization-complete {
             display: none;
             text-align: center;
@@ -246,53 +224,6 @@
             font-size: 1.1rem;
         }
 
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 12px 25px;
-            background: linear-gradient(to right, #1a1a3a, #2a2a5a);
-            color: #e0e0ff;
-            border: 1px solid #4a4a8a;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            font-weight: 500;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-
-        .btn:hover {
-            background: linear-gradient(to right, #2a2a5a, #3a3a7a);
-            box-shadow: 0 0 15px rgba(100, 100, 255, 0.5);
-            transform: translateY(-3px);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
         .data-section {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -300,76 +231,6 @@
             margin: 40px 0;
         }
 
-        .data-card {
-            background: linear-gradient(to bottom, #0f0f2a, #1a1a3a);
-            border: 1px solid #2a2a5a;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .data-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(to right, #4a8aff, #ff4a8a);
-            transform: scaleX(0);
-            transition: transform 0.5s ease;
-        }
-
-        .data-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .data-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 100, 255, 0.3);
-        }
-
-        .data-card h3 {
-            color: #a0a0ff;
-            margin-bottom: 15px;
-            font-size: 1.4rem;
-            border-bottom: 1px solid #3a3a7a;
-            padding-bottom: 10px;
-        }
-
-        .chart-container {
-            /* 由於圖表已刪除，這個樣式雖然保留但不會影響實際渲染 */
-            width: 100%;
-            height: 300px;
-            position: relative;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #2a2a5a;
-        }
-
-        th {
-            background-color: #1a1a3a;
-            color: #a0a0ff;
-            font-weight: 600;
-        }
-
-        tr:hover {
-            background-color: #1a1a4a;
-        }
-
-        /* 項目編號區域 - 移動到代碼編輯器下方 */
         .project-section {
             text-align: center;
             margin: 20px 0;
@@ -377,7 +238,7 @@
             background: linear-gradient(to right, #0f0f2a, #1a1a3a);
             border-radius: 10px;
             border: 1px solid #2a2a5a;
-            display: none; /* 默认隐藏，在代码编辑器显示时显示 */
+            display: none; 
         }
 
         .project-id {
@@ -406,7 +267,6 @@
             transform: translateY(-3px);
         }
         
-        /* 模態框相關樣式，確保點擊後能正常彈出 */
         .modal {
             display: none;
             position: fixed;
@@ -489,13 +349,6 @@
             border-color: #7abbe0;
         }
         
-        /* 移除圖表相關的樣式 */
-        .nav-tabs, .nav-tab, .comparison-table {
-            /* 這些將不再需要 */
-            display: none;
-        }
-        
-        /* 確保 tab-content active 顯示正常 */
         .tab-content {
             display: none;
         }
@@ -530,16 +383,13 @@
             background: linear-gradient(to right, transparent, #00ffff, transparent);
         }
 
-        /* 移動端優化樣式 */
         @media (max-width: 768px) {
             h1 { font-size: 2.2rem; }
             .chip-container { height: 400px; }
             .data-section { grid-template-columns: 1fr; }
             .code-editor-container { height: 180px; }
             .code-body { font-size: 12px; padding: 10px; }
-            table { display: block; overflow-x: auto; }
             .project-id { font-size: 1.5rem; }
-            table th, table td { padding: 8px 10px; font-size: 0.85rem; }
             .modal-content { width: 95%; }
             .modal-header { padding: 10px 15px; }
             .modal-body { padding: 15px; }
@@ -552,8 +402,7 @@
             .chip-container { height: 300px; }
             .code-editor-container { height: 150px; }
             .code-body { font-size: 10px; }
-            .btn { padding: 8px 15px; font-size: 0.85rem; }
-            table th, table td { padding: 6px 8px; font-size: 0.8rem; }
+            .project-submit-btn { padding: 8px 15px; font-size: 0.85rem; }
             .project-id { font-size: 1.3rem; }
         }
 
@@ -562,8 +411,6 @@
             h1 { font-size: 1.5rem; }
             .chip-container { height: 250px; }
             .code-editor-container { height: 130px; }
-            .data-card { padding: 15px; }
-            .data-card h3 { font-size: 1.2rem; }
             .project-id { font-size: 1.2rem; }
         }
     </style>
@@ -571,7 +418,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>AI semiconductor manufacturing process</h1>
+            <h1>AI Semiconductor Manufacturing Process</h1>
         </header>
 
         <section class="animation-section">
@@ -579,7 +426,7 @@
                 <model-viewer 
                     id="chipViewer" 
                     src="https://huggingface.co/dgplay001/ai-chip-model/resolve/main/AIC.glb" 
-                    alt="半導體製程 AIC 模型"
+                    alt="Semiconductor AIC Model"
                     shadow-intensity="1"
                     camera-controls
                     auto-rotate
@@ -605,24 +452,22 @@
             
             <div class="project-section" id="projectSection">
                 <div class="project-id" id="projectId">Ai-Mod-202511-00001</div>
-                <button id="submitProject" class="project-submit-btn">送出專案編號</button>
+                <button id="submitProject" class="project-submit-btn">Submit Project ID</button>
             </div>
             
             <div class="ai-optimization-complete" id="aiOptimizationComplete">
-                <h3>AI應用優化中</h3>
-                <p>AI正在優化半導體製程參數，請稍候...</p>
+                <h3>AI Optimization Complete!</h3>
+                <p>Please click the button below to confirm Project ID and continue.</p>
             </div>
         </section>
-
 
         <section class="tab-content active" id="tables-tab">
             <div class="data-section">
                 </div>
         </section>
 
-
         <footer>
-            <p>AI semiconductor manufacturing process</p>
+            <p>AI Semiconductor Manufacturing Process &copy; 2025</p>
         </footer>
     </div>
 
@@ -640,553 +485,156 @@
     </div>
 
     <script>
-        // *** JavaScript 區塊 (包含新的點擊計數和循環邏輯) ***
-        
-        // --- 新增的變數來處理點擊計數和問答進度 ---
+        // --- Variables ---
         let clickCount = 0;
         const MAX_CLICKS = 3;
-        const QUIZ_IDS = ['quiz1', 'quiz2', 'quiz3', 'quiz4']; // 題號列表
-        let currentQuizIndex = 0; // 從第一道題開始 (0)
-        // ---------------------------------
-
-        // 代碼編輯器相關變數
-        let typingInterval;
-        let codeRunning = false;
+        let clickResetTimer = null; 
         
-        // 項目編號管理
+        // Quiz Cycle Logic
+        const QUIZ_IDS = ['quiz1', 'quiz2', 'quiz3', 'quiz4']; 
+        let currentQuizIndex = 0; 
+        
+        let typingInterval;
         let projectCounter = 1;
-
-        // 測驗數據 - 保持不變
+        
+        // Quiz Data (English)
         const quizData = {
             quiz1: {
                 title: "EDA Process Optimization",
                 question: "Please select your preferred EDA optimization approach:",
-                options: [
-                    "A. Logic Synthesis Optimization",
-                    "B. Physical Design Optimization",
-                    "C. Timing Analysis Optimization",
-                    "D. Power Optimization"
-                ]
+                options: ["A. Logic Synthesis Optimization", "B. Physical Design Optimization", "C. Timing Analysis Optimization", "D. Power Optimization"]
             },
             quiz2: {
                 title: "FEOKL Process Optimization",
                 question: "Please select your preferred FEOKL optimization approach:",
-                options: [
-                    "A. Feature Extraction Optimization",
-                    "B. Knowledge Learning Optimization",
-                    "C. Model Training Optimization",
-                    "D. Inference Acceleration"
-                ]
+                options: ["A. Feature Extraction Optimization", "B. Knowledge Learning Optimization", "C. Model Training Optimization", "D. Inference Acceleration"]
             },
             quiz3: {
                 title: "YLELD Process Optimization",
                 question: "Please select your preferred YLELD optimization approach:",
-                options: [
-                    "A. Yield Prediction Optimization",
-                    "B. Defect Analysis Optimization",
-                    "C. Process Control Optimization",
-                    "D. Quality Assurance Optimization"
-                ]
+                options: ["A. Yield Prediction Optimization", "B. Defect Analysis Optimization", "C. Process Control Optimization", "D. Quality Assurance Optimization"]
             },
             quiz4: {
                 title: "P&T Process Optimization",
                 question: "Please select your preferred P&T optimization approach:",
-                options: [
-                    "A. Performance Optimization",
-                    "B. Thermal Management Optimization",
-                    "C. Power-Performance Trade-off",
-                    "D. Reliability Optimization"
-                ]
+                options: ["A. Performance Optimization", "B. Thermal Management Optimization", "C. Power-Performance Trade-off", "D. Reliability Optimization"]
             }
         };
 
-        // 測驗相關變數
         let currentQuiz = null;
 
-        // 初始化代碼編輯器 (保留)
+        // --- Core Functions ---
+
+        // 1. Code Editor Typing Effect
         function initCodeEditor() {
             const codeBody = document.getElementById('codeBody');
-            
-            // 定義代碼片段 - 使用英文
             const codeSnippets = [
-                `// AI Semiconductor Process Optimization Module
-class AISemiconductorProcess {
-  constructor(processNode, waferSize) {
-    this.processNode = processNode; // e.g., '5nm', '3nm'
-    this.waferSize = waferSize; // e.g., 300, 450
-    this.defectDensity = 0;
-    this.yield = 0.95;
-    this.aiModel = new DeepLearningModel();
-  }
-
-  initializeAIModel() {
-    this.aiModel.loadPretrainedModel('semiconductor_process_optimization');
-    this.aiModel.setParameters({
-      learningRate: 0.001,
-      batchSize: 32,
-      iterations: 1000
-    });
-    console.log('AI model initialization completed');
-  }
-
-  analyzeProcessData(sensorData) {
-    const features = this.extractFeatures(sensorData);
-    const prediction = this.aiModel.predict(features);
-    
-    this.defectDensity = prediction.defectDensity;
-    this.yield = prediction.yield;
-    
-    console.log('Process analysis completed');
-    console.log('Predicted defect density: ' + this.defectDensity);
-    console.log('Predicted yield: ' + (this.yield * 100).toFixed(2) + '%');
-    
-    return prediction;
-  }
-
-  extractFeatures(data) {
-    // Extract process-related features
-    const features = [];
-    features.push(data.temperatureAverage);
-    features.push(data.pressureStdDev);
-    features.push(data.chemicalConcentration);
-    features.push(data.exposureTime);
-    features.push(data.etchRate);
-    
-    return features;
-  }
-
-  optimizeProcessParameters() {
-    const currentParameters = {
-      temperature: currentTemperature,
-      pressure: currentPressure,
-      chemicalConcentration: currentConcentration
-    };
-    
-    const optimizationSuggestion = this.aiModel.generateOptimizationSuggestion(currentParameters);
-    
-    console.log('Process parameter optimization suggestions:');
-    console.log('Temperature adjustment: ' + optimizationSuggestion.temperatureAdjustment + '°C');
-    console.log('Pressure adjustment: ' + optimizationSuggestion.pressureAdjustment + 'Pa');
-    console.log('Chemical concentration adjustment: ' + optimizationSuggestion.chemicalConcentrationAdjustment + '%');
-    
-    return optimizationSuggestion;
-  }
-}
-
-class DeepLearningModel {
-  loadPretrainedModel(modelName) {
-    console.log('Loading pre-trained model: ' + modelName);
-    // Simulate loading AI model
-    this.modelLoaded = true;
-  }
-
-  setParameters(parameters) {
-    this.learningRate = parameters.learningRate;
-    this.batchSize = parameters.batchSize;
-    this.iterations = parameters.iterations;
-    console.log('AI model parameters set');
-  }
-
-  predict(features) {
-    // Simulate AI prediction
-    const defectDensity = Math.random() * 0.1;
-    const yield = 0.95 - defectDensity * 5;
-    
-    return {
-      defectDensity: defectDensity,
-      yield: Math.max(0.7, yield)
-    };
-  }
-
-  generateOptimizationSuggestion(currentParameters) {
-    // Simulate AI generating optimization suggestions
-    return {
-      temperatureAdjustment: (Math.random() - 0.5) * 5,
-      pressureAdjustment: (Math.random() - 0.5) * 10,
-      chemicalConcentrationAdjustment: (Math.random() - 0.5) * 2
-    };
-  }
-}
-
-// Create AI semiconductor process instance
-const AIProcessOptimization = new AISemiconductorProcess('3nm', 300);
-AIProcessOptimization.initializeAIModel();`,
-
-                `// Extreme Ultraviolet (EUV) Lithography Process Simulation
-class EUVLithographyProcess {
-  constructor(wavelength, numericalAperture) {
-    this.wavelength = wavelength; // e.g., 13.5nm
-    this.numericalAperture = numericalAperture; // e.g., 0.33
-    this.resolution = this.calculateResolution();
-    this.sourcePower = 250; // Watts
-    this.exposureDose = 30; // mJ/cm²
-  }
-
-  calculateResolution() {
-    // Rayleigh Criterion: CD = k1 * λ / NA
-    const k1 = 0.25; // Process factor
-    return k1 * this.wavelength / this.numericalAperture;
-  }
-
-  simulateLithographyProcess(maskPattern, resistParameters) {
-    console.log('Starting EUV lithography simulation');
-    console.log('Target resolution: ' + this.resolution.toFixed(2) + ' nm');
-    
-    const imagingResult = this.opticalImaging(maskPattern);
-    const resistResponse = this.calculateResistResponse(imagingResult, resistParameters);
-    const finalPattern = this.developmentProcess(resistResponse);
-    
-    console.log('EUV lithography simulation completed');
-    return finalPattern;
-  }
-
-  opticalImaging(maskPattern) {
-    // Simulate EUV optical imaging process
-    const imaging = [];
-    for (let i = 0; i < maskPattern.length; i++) {
-      // Consider optical proximity effects
-      const intensity = this.calculateLightIntensity(maskPattern, i);
-      imaging.push(intensity);
-    }
-    return imaging;
-  }
-
-  calculateLightIntensity(pattern, position) {
-    // Simplified light intensity calculation model
-    let totalIntensity = 0;
-    const range = 3; // Optical proximity effect range
-    
-    for (let i = -range; i <= range; i++) {
-      const index = position + i;
-      if (index >= 0 && index < pattern.length) {
-        const distanceFactor = Math.exp(-Math.abs(i) / 2);
-        totalIntensity += pattern[index] * distanceFactor;
-      }
-    }
-    
-    return totalIntensity / (2 * range + 1);
-  }
-
-  calculateResistResponse(lightIntensityDistribution, resistParameters) {
-    const response = [];
-    for (let i = 0; i < lightIntensityDistribution.length; i++) {
-      const solubility = this.calculateSolubility(lightIntensityDistribution[i], resistParameters);
-      response.push(solubility);
-    }
-    return response;
-  }
-
-  calculateSolubility(lightIntensity, resistParameters) {
-    // Use Mack model to calculate resist solubility
-    const criticalDose = resistParameters.criticalDose;
-    const contrast = resistParameters.contrast;
-    
-    return 1 / (1 + Math.pow(criticalDose / (lightIntensity * this.exposureDose), contrast));
-  }
-
-  developmentProcess(resistResponse) {
-    const finalPattern = [];
-    const threshold = 0.5; // Solubility threshold
-    
-    for (let i = 0; i < resistResponse.length; i++) {
-      finalPattern.push(resistResponse[i] > threshold ? 1 : 0);
-    }
-    
-    return finalPattern;
-  }
-}
-
-// Create EUV lithography process instance
-const EUVProcess = new EUVLithographyProcess(13.5, 0.33);
-console.log('EUV lithography resolution: ' + EUVProcess.resolution.toFixed(2) + ' nm');`,
-
-                `// Semiconductor Inspection and Yield Analysis
-class SemiconductorInspectionSystem {
-  constructor(inspectionTechnology, resolution) {
-    this.inspectionTechnology = inspectionTechnology; // e.g., 'E-beam', 'Optical'
-    this.resolution = resolution; // nanometers
-    this.inspectionSpeed = 0;
-    this.defectDetectionRate = 0.95;
-    this.falsePositiveRate = 0.05;
-  }
-
-  performWaferInspection(waferData) {
-    console.log('Starting wafer inspection: ' + this.inspectionTechnology);
-    const startTime = Date.now();
-    
-    const inspectionResult = this.scanWafer(waferData);
-    const defectMap = this.analyzeDefects(inspectionResult);
-    const yieldReport = this.generateYieldReport(defectMap);
-    
-    const endTime = Date.now();
-    this.inspectionSpeed = waferData.area / ((endTime - startTime) / 1000);
-    
-    console.log('Wafer inspection completed');
-    console.log('Inspection speed: ' + this.inspectionSpeed.toFixed(2) + ' mm²/s');
-    console.log('Defects found: ' + defectMap.defectCount);
-    console.log('Estimated yield: ' + (yieldReport.yield * 100).toFixed(2) + '%');
-    
-    return yieldReport;
-  }
-
-  scanWafer(waferData) {
-    const scanData = [];
-    const pixelCount = Math.floor(waferData.area / (this.resolution * this.resolution));
-    
-    for (let i = 0; i < pixelCount; i++) {
-      // Simulate scanning process
-      const signalStrength = Math.random();
-      const isDefect = Math.random() < waferData.defectDensity;
-      
-      scanData.push({
-        position: i,
-        signalStrength: signalStrength,
-        isDefect: isDefect,
-        signalToNoiseRatio: signalStrength / (Math.random() * 0.1 + 0.01)
-      });
-    }
-    
-    return scanData;
-  }
-
-  analyzeDefects(scanData) {
-                const defectMap = {
-      defectPositions: [],
-      defectTypes: [],
-      defectSeverity: [],
-      defectCount: 0
-    };
-    
-    for (let i = 0; i < scanData.length; i++) {
-      const dataPoint = scanData[i];
-      
-      if (dataPoint.isDefect && dataPoint.signalToNoiseRatio > 3) {
-        defectMap.defectPositions.push(dataPoint.position);
-        defectMap.defectTypes.push(this.classifyDefect(dataPoint));
-        defectMap.defectSeverity.push(this.assessSeverity(dataPoint));
-        defectMap.defectCount++;
-      }
-    }
-    
-    return defectMap;
-  }
-
-  classifyDefect(dataPoint) {
-    const defectTypes = [
-      'Particle Contamination',
-      'Scratch',
-      'Pattern Defect',
-      'Alignment Error',
-      'Electrical Defect'
-    ];
-    
-    return defectTypes[Math.floor(Math.random() * defectTypes.length)];
-  }
-
-  assessSeverity(dataPoint) {
-    // Assess defect severity based on signal-to-noise ratio
-    if (dataPoint.signalToNoiseRatio > 10) return 'Critical';
-    if (dataPoint.signalToNoiseRatio > 5) return 'Moderate';
-    return 'Minor';
-  }
-
-  generateYieldReport(defectMap) {
-    const totalChips = 1000; // Assume 1000 chips on the wafer
-    let failedChips = 0;
-    
-    // Simplified yield model: each critical defect causes one chip to fail
-    for (let i = 0; i < defectMap.defectSeverity.length; i++) {
-      if (defectMap.defectSeverity[i] === 'Critical') {
-        failedChips++;
-      }
-    }
-    
-    const yield = (totalChips - failedChips) / totalChips;
-    
-    return {
-      totalChips: totalChips,
-      failedChips: failedChips,
-      yield: yield,
-      defectDistribution: this.analyzeDefectDistribution(defectMap)
-    };
-  }
-
-  analyzeDefectDistribution(defectMap) {
-    const distribution = {};
-    for (let i = 0; i < defectMap.defectTypes.length; i++) {
-      const type = defectMap.defectTypes[i];
-      distribution[type] = (distribution[type] || 0) + 1;
-    }
-    return distribution;
-  }
-}
-
-// Create semiconductor inspection system instance
-const InspectionSystem = new SemiconductorInspectionSystem('E-beam', 5);
-console.log('Semiconductor inspection system initialization completed');`
+                `class AISemiconductorProcess {\n  constructor(processNode) {\n    this.processNode = processNode;\n    this.yield = 0.95;\n  }\n  optimize() {\n    console.log('Optimizing process...');\n    return this.yield + 0.02;\n  }\n}\n\nconst process = new AISemiconductorProcess('3nm');\nprocess.optimize();`,
+                `// Deep Learning Model Training\nconst model = tf.sequential();\nmodel.add(tf.layers.dense({units: 100, activation: 'relu', inputShape: [10]}));\nmodel.add(tf.layers.dense({units: 1, activation: 'linear'}));\nmodel.compile({optimizer: 'sgd', loss: 'meanSquaredError'});\nconsole.log('Model compiled');`,
+                `// Defect Analysis System\nfunction analyzeWafer(waferData) {\n  let defects = 0;\n  for(let region of waferData) {\n    if(region.signal > threshold) defects++;\n  }\n  return defects / waferData.length;\n}\nconsole.log('Defect rate calculated');`,
+                `// Thermal Management\nif (currentTemp > MAX_TEMP) {\n  throttleClockSpeed();\n  increaseFanSpeed();\n  logWarning('Temperature critical');\n} else {\n  maintainPerformance();\n}\nconsole.log('Thermal check complete');`
             ];
             
-            let currentSnippet = 0;
             let currentLine = 0;
             let codeLines = [];
+
+            function parseCodeSnippet(snippet) { return snippet.split('\n'); }
             
-            // 將代碼片段分割成行
-            function parseCodeSnippet(snippet) {
-                return snippet.split('\n');
-            }
-            
-            // 添加語法高亮
             function highlightCode(line) {
-                // 關鍵字
-                line = line.replace(/\b(class|constructor|function|if|else|for|let|const|var|return|new|console|log|throw|Error|Math|Date|push|length|floor|random|pow|exp|abs)\b/g, '<span class="keyword">$1</span>');
-                
-                // 函數名
-                line = line.replace(/\b(\w+)\s*\(/g, '<span class="function">$1</span>(');
-                
-                // 字符串
-                line = line.replace(/('.*?'|".*?")/g, '<span class="string">$1</span>');
-                
-                // 數字
-                line = line.replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>');
-                
-                // 註釋
-                line = line.replace(/\/\/.*$/g, '<span class="comment">$&</span>');
-                
-                // 運算符
-                line = line.replace(/(=|\+|-|\*|\/|>|<|!|&|\||%|\^)/g, '<span class="operator">$1</span>');
-                
-                return line;
+                return line
+                    .replace(/\b(class|const|let|var|function|return|if|else|new|this)\b/g, '<span class="keyword">$1</span>')
+                    .replace(/('.*?')/g, '<span class="string">$1</span>')
+                    .replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>')
+                    .replace(/\/\/.*/g, '<span class="comment">$&</span>');
             }
             
-            // 顯示下一行代碼
             function typeNextLine() {
                 if (currentLine < codeLines.length) {
                     const lineElement = document.createElement('div');
                     lineElement.className = 'code-line';
-                    
                     const lineNumber = document.createElement('span');
                     lineNumber.className = 'line-number';
                     lineNumber.textContent = (currentLine + 1).toString();
-                    
                     const codeContent = document.createElement('span');
                     codeContent.className = 'code-content';
                     codeContent.innerHTML = highlightCode(codeLines[currentLine]);
-                    
                     lineElement.appendChild(lineNumber);
                     lineElement.appendChild(codeContent);
                     codeBody.appendChild(lineElement);
-                    
-                    // 滾動到底部
                     codeBody.scrollTop = codeBody.scrollHeight;
-                    
                     currentLine++;
                 } else {
-                    // 當前代碼片段完成，停止打字效果
                     clearInterval(typingInterval);
-                    
-                    // 1秒後顯示AI優化完成提示
                     setTimeout(() => {
-                        // *** 在這裡調用項目提交邏輯 ***
-                        // 我們在 submitProject 中進行索引遞增和模型重設，以確保流程完成
-                        // 但我們需要確保這裡的邏輯不會被跳過。
+                        document.getElementById('codeEditor').style.display = 'none';
+                        document.getElementById('aiOptimizationComplete').style.display = 'block';
                         
-                        document.getElementById('codeEditor').style.display = 'none';
-                        document.getElementById('projectSection').style.display = 'block'; // 確保提交按鈕出現
-                        document.getElementById('aiOptimizationComplete').style.display = 'block';
-                        document.getElementById('aiOptimizationComplete').querySelector('h3').textContent = 'AI優化完成！';
-                        document.getElementById('aiOptimizationComplete').querySelector('p').textContent = '請點擊下方按鈕確認項目編號並繼續。';
-
-                        
+                        setTimeout(() => {
+                             document.getElementById('aiOptimizationComplete').style.display = 'none';
+                             document.getElementById('projectSection').style.display = 'block';
+                        }, 1500);
                     }, 1000);
                 }
             }
             
-            // 開始打字效果
             function startTyping() {
-                // 清除之前的計時器
                 clearInterval(typingInterval);
-                
-                // 清空代碼區域
                 codeBody.innerHTML = '';
                 currentLine = 0;
-                
-                // 選擇當前問答對應的代碼片段
-                currentSnippet = currentQuizIndex; // 這裡可以根據問答題庫對應到不同的代碼片段
-                if (currentSnippet >= codeSnippets.length) {
-                    currentSnippet = 0; // 如果題目數量少於代碼片段數量，則循環
-                }
-                codeLines = parseCodeSnippet(codeSnippets[currentSnippet]);
-                
-                // 開始打字效果
-                typingInterval = setInterval(typeNextLine, 250); // 每250毫秒打一行
-                
-                // 設置60秒後停止
-                setTimeout(() => {
-                    clearInterval(typingInterval);
-                }, 60000);
+                const snippetIndex = currentQuizIndex % codeSnippets.length;
+                codeLines = parseCodeSnippet(codeSnippets[snippetIndex]);
+                typingInterval = setInterval(typeNextLine, 150); 
             }
             
-            // 返回函數以便外部調用
-            return {
-                startTyping: startTyping
-            };
+            return { startTyping: startTyping };
         }
 
-        // --- 新增的模型重設函數 ---
+        // 2. Reset Model View
         function resetModelView() {
             const modelViewer = document.getElementById('chipViewer');
             if (modelViewer) {
-                // 重設 camera-target 和 camera-orbit 到其預設值 (模型初始視角)
-                modelViewer.cameraTarget = 'auto'; // 讓模型居中
-                modelViewer.cameraOrbit = '0deg 75deg auto'; // 預設初始視角
-                // 重新啟用 auto-rotate 讓它繼續旋轉
                 modelViewer.setAttribute('auto-rotate', 'true');
+                modelViewer.cameraOrbit = '0deg 75deg auto';
+                modelViewer.cameraTarget = 'auto';
+                modelViewer.fieldOfView = 'auto';
             }
         }
-        // --- -------------------- ---
 
-        // 項目編號管理 (包含問答進度和模型重設)
+        // 3. Update Project ID
         function updateProjectId() {
             const projectIdElement = document.getElementById('projectId');
-            projectCounter++; // 每次更新時增加編號
+            projectCounter++; // Increment
             const counterStr = projectCounter.toString().padStart(5, '0');
             projectIdElement.textContent = `Ai-Mod-202511-${counterStr}`;
         }
         
+        // 4. Submit Logic (Cycle to next quiz)
         function submitProject() {
-            // 1. 顯示提交成功的提示
             const submitBtn = document.getElementById('submitProject');
             const originalText = submitBtn.textContent;
-            submitBtn.textContent = '已送出！';
+            submitBtn.textContent = 'Submitted!';
             
-            // 2. 更新項目編號並隱藏 AI 提示
-            updateProjectId();
-            document.getElementById('aiOptimizationComplete').style.display = 'none';
-            document.getElementById('codeEditor').style.display = 'none';
-            document.getElementById('projectSection').style.display = 'none';
-            
-            // 3. 重設模型視角
-            resetModelView(); 
-            
-            // 4. 更新問答進度 (循環邏輯)
-            currentQuizIndex = (currentQuizIndex + 1) % QUIZ_IDS.length; 
-            
-            // 5. 按鈕文字延時恢復
             setTimeout(() => {
-                submitBtn.textContent = originalText;
-            }, 2000);
+                document.getElementById('projectSection').style.display = 'none';
+                submitBtn.textContent = 'Submit Project ID'; // Reset text
+                
+                // ** Increment Project ID here **
+                updateProjectId();
+                
+                // ** Cycle to the next quiz **
+                currentQuizIndex = (currentQuizIndex + 1) % QUIZ_IDS.length;
+                console.log("Next Quiz Index:", currentQuizIndex);
+                
+                resetModelView();
+                clickCount = 0;
+                
+            }, 1000);
         }
 
-        // 顯示測驗模態框 (使用當前索引)
-        function showQuiz(quizId) {
-            // 從 QUIZ_IDS 中獲取當前的 quizId
-            const currentId = QUIZ_IDS[currentQuizIndex]; 
-            currentQuiz = quizData[currentId];
-            
-            // 重設點擊計數
-            clickCount = 0;
-            // 暫停模型旋轉 (可選)
-            document.getElementById('chipViewer').removeAttribute('auto-rotate'); 
+        // 5. Show Quiz
+        function showQuiz() {
+            const quizId = QUIZ_IDS[currentQuizIndex];
+            currentQuiz = quizData[quizId];
             
             document.getElementById('quizTitle').textContent = currentQuiz.title;
             document.getElementById('question').textContent = currentQuiz.question;
@@ -1201,15 +649,9 @@ console.log('Semiconductor inspection system initialization completed');`
                 optionElement.dataset.index = index;
                 
                 optionElement.addEventListener('click', function() {
-                    // 移除之前的選擇
-                    document.querySelectorAll('.option').forEach(opt => {
-                        opt.classList.remove('selected');
-                    });
-                    
-                    // 選擇當前選項
+                    document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
                     this.classList.add('selected');
                     
-                    // 直接關閉測驗並進入AI優化流程 (這一步取代了模態框的提交按鈕)
                     setTimeout(() => {
                         closeQuiz();
                         startAIOptimization();
@@ -1220,56 +662,56 @@ console.log('Semiconductor inspection system initialization completed');`
             });
             
             document.getElementById('quizModal').style.display = 'flex';
+            
+            const modelViewer = document.getElementById('chipViewer');
+            if(modelViewer) modelViewer.removeAttribute('auto-rotate');
         }
 
-        // 關閉測驗 (保留)
         function closeQuiz() {
             document.getElementById('quizModal').style.display = 'none';
         }
 
-        // 開始AI優化流程 (在選擇答案後立即觸發)
         function startAIOptimization() {
-            // 隱藏不相關的元素
-            document.getElementById('projectSection').style.display = 'none';
-            document.getElementById('aiOptimizationComplete').style.display = 'none';
-            
-            // 顯示代碼編輯器
             document.getElementById('codeEditor').style.display = 'block';
-            
-            // 啟動代碼編輯器的打字效果
             codeEditorInstance.startTyping();
         }
 
-        // 初始化
+        // --- Initialization ---
         let codeEditorInstance; 
         
         window.addEventListener('load', function() {
             codeEditorInstance = initCodeEditor();
-            updateProjectId();
+            // Initial Project ID setting (start at 00001)
+            const projectIdElement = document.getElementById('projectId');
+            projectIdElement.textContent = `Ai-Mod-202511-00001`;
             
-            // 項目編號提交按鈕 (現在這個按鈕用來結束 AI 優化流程並重設)
             document.getElementById('submitProject').addEventListener('click', submitProject);
             
-            // *** 點擊 3D 模型時執行點擊計數檢查和測驗邏輯 ***
-            const chipViewer = document.getElementById('chipViewer'); // 直接綁定 model-viewer
+            // *** 3-Click Logic with Timeout ***
+            const chipViewer = document.getElementById('chipViewer');
+            
             if (chipViewer) {
                 chipViewer.addEventListener('click', function(event) {
-                    // 避免在模型加載或處理時意外觸發
                     if (document.getElementById('quizModal').style.display === 'flex' || 
-                        document.getElementById('codeEditor').style.display === 'block') {
-                        return; // 如果彈窗或代碼正在運行，則忽略點擊
+                        document.getElementById('codeEditor').style.display === 'block' ||
+                        document.getElementById('projectSection').style.display === 'block') {
+                        return;
                     }
 
+                    if (clickResetTimer) clearTimeout(clickResetTimer);
+
                     clickCount++;
-                    
+                    console.log("Click count:", clickCount);
+
                     if (clickCount >= MAX_CLICKS) {
-                        // 點擊計數達到後顯示當前索引對應的測驗
-                        showQuiz(QUIZ_IDS[currentQuizIndex]);
-                        // 注意: clickCount 在 showQuiz 裡被重置為 0
-                    } else if (chipViewer) {
-                        // 如果未達到次數，用戶可以自由旋轉/縮放模型
-                        // 移除自動旋轉，讓用戶交互優先，點擊三次再開始問答
-                        chipViewer.removeAttribute('auto-rotate'); 
+                        showQuiz();
+                        clickCount = 0; 
+                    } else {
+                        // Reset if not clicked again within 1 second
+                        clickResetTimer = setTimeout(() => {
+                            clickCount = 0;
+                            console.log("Click count reset to 0");
+                        }, 1000); 
                     }
                 });
             }
