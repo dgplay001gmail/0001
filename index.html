@@ -640,11 +640,13 @@
     </div>
 
     <script>
-        // *** JavaScript 區塊 (包含新的點擊計數和重設邏輯) ***
+        // *** JavaScript 區塊 (包含新的點擊計數和循環邏輯) ***
         
-        // --- 新增的變數來處理點擊計數 ---
+        // --- 新增的變數來處理點擊計數和問答進度 ---
         let clickCount = 0;
         const MAX_CLICKS = 3;
+        const QUIZ_IDS = ['quiz1', 'quiz2', 'quiz3', 'quiz4']; // 題號列表
+        let currentQuizIndex = 0; // 從第一道題開始 (0)
         // ---------------------------------
 
         // 代碼編輯器相關變數
@@ -898,7 +900,7 @@ class EUVLithographyProcess {
 const EUVProcess = new EUVLithographyProcess(13.5, 0.33);
 console.log('EUV lithography resolution: ' + EUVProcess.resolution.toFixed(2) + ' nm');`,
 
-                `// Semiconductor Inspection and Yield Analysis
+                `// Semiconductor Inspection and Yield Analysis
 class SemiconductorInspectionSystem {
   constructor(inspectionTechnology, resolution) {
     this.inspectionTechnology = inspectionTechnology; // e.g., 'E-beam', 'Optical'
@@ -1022,116 +1024,118 @@ class SemiconductorInspectionSystem {
 // Create semiconductor inspection system instance
 const InspectionSystem = new SemiconductorInspectionSystem('E-beam', 5);
 console.log('Semiconductor inspection system initialization completed');`
-            ];
-            
-            let currentSnippet = 0;
-            let currentLine = 0;
-            let codeLines = [];
-            
-            // 將代碼片段分割成行
-            function parseCodeSnippet(snippet) {
-                return snippet.split('\n');
-            }
-            
-            // 添加語法高亮
-            function highlightCode(line) {
-                // 關鍵字
-                line = line.replace(/\b(class|constructor|function|if|else|for|let|const|var|return|new|console|log|throw|Error|Math|Date|push|length|floor|random|pow|exp|abs)\b/g, '<span class="keyword">$1</span>');
-                
-                // 函數名
-                line = line.replace(/\b(\w+)\s*\(/g, '<span class="function">$1</span>(');
-                
-                // 字符串
-                line = line.replace(/('.*?'|".*?")/g, '<span class="string">$1</span>');
-                
-                // 數字
-                line = line.replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>');
-                
-                // 註釋
-                line = line.replace(/\/\/.*$/g, '<span class="comment">$&</span>');
-                
-                // 運算符
-                line = line.replace(/(=|\+|-|\*|\/|>|<|!|&|\||%|\^)/g, '<span class="operator">$1</span>');
-                
-                return line;
-            }
-            
-            // 顯示下一行代碼
-            function typeNextLine() {
-                if (currentLine < codeLines.length) {
-                    const lineElement = document.createElement('div');
-                    lineElement.className = 'code-line';
-                    
-                    const lineNumber = document.createElement('span');
-                    lineNumber.className = 'line-number';
-                    lineNumber.textContent = (currentLine + 1).toString();
-                    
-                    const codeContent = document.createElement('span');
-                    codeContent.className = 'code-content';
-                    codeContent.innerHTML = highlightCode(codeLines[currentLine]);
-                    
-                    lineElement.appendChild(lineNumber);
-                    lineElement.appendChild(codeContent);
-                    codeBody.appendChild(lineElement);
-                    
-                    // 滾動到底部
-                    codeBody.scrollTop = codeBody.scrollHeight;
-                    
-                    currentLine++;
-                } else {
-                    // 當前代碼片段完成，停止打字效果
-                    clearInterval(typingInterval);
-                    
-                    // 1秒後顯示AI優化完成提示
-                    setTimeout(() => {
+            ];
+            
+            let currentSnippet = 0;
+            let currentLine = 0;
+            let codeLines = [];
+            
+            // 將代碼片段分割成行
+            function parseCodeSnippet(snippet) {
+                return snippet.split('\n');
+            }
+            
+            // 添加語法高亮
+            function highlightCode(line) {
+                // 關鍵字
+                line = line.replace(/\b(class|constructor|function|if|else|for|let|const|var|return|new|console|log|throw|Error|Math|Date|push|length|floor|random|pow|exp|abs)\b/g, '<span class="keyword">$1</span>');
+                
+                // 函數名
+                line = line.replace(/\b(\w+)\s*\(/g, '<span class="function">$1</span>(');
+                
+                // 字符串
+                line = line.replace(/('.*?'|".*?")/g, '<span class="string">$1</span>');
+                
+                // 數字
+                line = line.replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>');
+                
+                // 註釋
+                line = line.replace(/\/\/.*$/g, '<span class="comment">$&</span>');
+                
+                // 運算符
+                line = line.replace(/(=|\+|-|\*|\/|>|<|!|&|\||%|\^)/g, '<span class="operator">$1</span>');
+                
+                return line;
+            }
+            
+            // 顯示下一行代碼
+            function typeNextLine() {
+                if (currentLine < codeLines.length) {
+                    const lineElement = document.createElement('div');
+                    lineElement.className = 'code-line';
+                    
+                    const lineNumber = document.createElement('span');
+                    lineNumber.className = 'line-number';
+                    lineNumber.textContent = (currentLine + 1).toString();
+                    
+                    const codeContent = document.createElement('span');
+                    codeContent.className = 'code-content';
+                    codeContent.innerHTML = highlightCode(codeLines[currentLine]);
+                    
+                    lineElement.appendChild(lineNumber);
+                    lineElement.appendChild(codeContent);
+                    codeBody.appendChild(lineElement);
+                    
+                    // 滾動到底部
+                    codeBody.scrollTop = codeBody.scrollHeight;
+                    
+                    currentLine++;
+                } else {
+                    // 當前代碼片段完成，停止打字效果
+                    clearInterval(typingInterval);
+                    
+                    // 1秒後顯示AI優化完成提示
+                    setTimeout(() => {
+                        // *** 在這裡調用項目提交邏輯 ***
+                        // 我們在 submitProject 中進行索引遞增和模型重設，以確保流程完成
+                        // 但我們需要確保這裡的邏輯不會被跳過。
+                        
                         document.getElementById('codeEditor').style.display = 'none';
-                        document.getElementById('projectSection').style.display = 'none';
+                        document.getElementById('projectSection').style.display = 'block'; // 確保提交按鈕出現
                         document.getElementById('aiOptimizationComplete').style.display = 'block';
-                        
-                        // 5秒後隱藏提示並更新項目編號
-                        setTimeout(() => {
-                            // *** 在這裡重置模型視角 ***
-                            resetModelView();
-                            // *** -------------------- ***
-                            document.getElementById('aiOptimizationComplete').style.display = 'none';
-                            updateProjectId(); // 更新項目編號
-                        }, 5000);
-                    }, 1000);
-                }
-            }
-            
-            // 開始打字效果
-            function startTyping() {
-                // 清除之前的計時器
-                clearInterval(typingInterval);
-                
-                // 清空代碼區域
-                codeBody.innerHTML = '';
-                currentLine = 0;
-                
-                // 選擇隨機代碼片段
-                currentSnippet = Math.floor(Math.random() * codeSnippets.length);
-                codeLines = parseCodeSnippet(codeSnippets[currentSnippet]);
-                
-                // 開始打字效果
-                typingInterval = setInterval(typeNextLine, 250); // 每250毫秒打一行
-                
-                // 設置60秒後停止
-                setTimeout(() => {
-                    clearInterval(typingInterval);
-                }, 60000);
-            }
-            
-            // 返回函數以便外部調用
-            return {
-                startTyping: startTyping
-            };
-        }
+                        document.getElementById('aiOptimizationComplete').querySelector('h3').textContent = 'AI優化完成！';
+                        document.getElementById('aiOptimizationComplete').querySelector('p').textContent = '請點擊下方按鈕確認項目編號並繼續。';
+
+                        
+                    }, 1000);
+                }
+            }
+            
+            // 開始打字效果
+            function startTyping() {
+                // 清除之前的計時器
+                clearInterval(typingInterval);
+                
+                // 清空代碼區域
+                codeBody.innerHTML = '';
+                currentLine = 0;
+                
+                // 選擇當前問答對應的代碼片段
+                currentSnippet = currentQuizIndex; // 這裡可以根據問答題庫對應到不同的代碼片段
+                if (currentSnippet >= codeSnippets.length) {
+                    currentSnippet = 0; // 如果題目數量少於代碼片段數量，則循環
+                }
+                codeLines = parseCodeSnippet(codeSnippets[currentSnippet]);
+                
+                // 開始打字效果
+                typingInterval = setInterval(typeNextLine, 250); // 每250毫秒打一行
+                
+                // 設置60秒後停止
+                setTimeout(() => {
+                    clearInterval(typingInterval);
+                }, 60000);
+            }
+            
+            // 返回函數以便外部調用
+            return {
+                startTyping: startTyping
+            };
+        }
 
         // --- 新增的模型重設函數 ---
         function resetModelView() {
             const modelViewer = document.getElementById('chipViewer');
-            if (modelViewer && modelViewer.cameraTarget && modelViewer.cameraOrbit) {
+            if (modelViewer) {
                 // 重設 camera-target 和 camera-orbit 到其預設值 (模型初始視角)
                 modelViewer.cameraTarget = 'auto'; // 讓模型居中
                 modelViewer.cameraOrbit = '0deg 75deg auto'; // 預設初始視角
@@ -1141,119 +1145,135 @@ console.log('Semiconductor inspection system initialization completed');`
         }
         // --- -------------------- ---
 
-        // 圖表初始化函數被刪除，但保留其空殼結構，以防其他依賴 (雖然在HTML中已無調用)
-        function initCharts() {
-            // 圖表代碼已刪除
-        }
+        // 項目編號管理 (包含問答進度和模型重設)
+        function updateProjectId() {
+            const projectIdElement = document.getElementById('projectId');
+            projectCounter++; // 每次更新時增加編號
+            const counterStr = projectCounter.toString().padStart(5, '0');
+            projectIdElement.textContent = `Ai-Mod-202511-${counterStr}`;
+        }
+        
+        function submitProject() {
+            // 1. 顯示提交成功的提示
+            const submitBtn = document.getElementById('submitProject');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = '已送出！';
+            
+            // 2. 更新項目編號並隱藏 AI 提示
+            updateProjectId();
+            document.getElementById('aiOptimizationComplete').style.display = 'none';
+            document.getElementById('codeEditor').style.display = 'none';
+            document.getElementById('projectSection').style.display = 'none';
+            
+            // 3. 重設模型視角
+            resetModelView(); 
+            
+            // 4. 更新問答進度 (循環邏輯)
+            currentQuizIndex = (currentQuizIndex + 1) % QUIZ_IDS.length; 
+            
+            // 5. 按鈕文字延時恢復
+            setTimeout(() => {
+                submitBtn.textContent = originalText;
+            }, 2000);
+        }
 
-        // 項目編號管理 (保留)
-        function updateProjectId() {
-            const projectIdElement = document.getElementById('projectId');
-            projectCounter++; // 每次更新時增加編號
-            const counterStr = projectCounter.toString().padStart(5, '0');
-            projectIdElement.textContent = `Ai-Mod-202511-${counterStr}`;
-        }
-        
-        function submitProject() {
-            updateProjectId();
-            
-            // 顯示提交成功的提示
-            const originalText = document.getElementById('submitProject').textContent;
-            document.getElementById('submitProject').textContent = '已送出！';
-            
-            setTimeout(() => {
-                document.getElementById('submitProject').textContent = originalText;
-            }, 2000);
-        }
-
-        // 顯示測驗模態框 (現在會重設點擊計數)
-        function showQuiz(quizId) {
-            // 重設點擊計數，避免下次點擊又立即彈出
-            clickCount = 0; 
+        // 顯示測驗模態框 (使用當前索引)
+        function showQuiz(quizId) {
+            // 從 QUIZ_IDS 中獲取當前的 quizId
+            const currentId = QUIZ_IDS[currentQuizIndex]; 
+            currentQuiz = quizData[currentId];
+            
+            // 重設點擊計數
+            clickCount = 0;
             // 暫停模型旋轉 (可選)
             document.getElementById('chipViewer').removeAttribute('auto-rotate'); 
             
-            currentQuiz = quizData[quizId];
-            
-            document.getElementById('quizTitle').textContent = currentQuiz.title;
-            document.getElementById('question').textContent = currentQuiz.question;
-            
-            const optionsContainer = document.getElementById('options');
-            optionsContainer.innerHTML = '';
-            
-            currentQuiz.options.forEach((option, index) => {
-                const optionElement = document.createElement('div');
-                optionElement.className = 'option';
-                optionElement.textContent = option;
-                optionElement.dataset.index = index;
-                
-                optionElement.addEventListener('click', function() {
-                    // 移除之前的選擇
-                    document.querySelectorAll('.option').forEach(opt => {
-                        opt.classList.remove('selected');
-                    });
-                    
-                    // 選擇當前選項
-                    this.classList.add('selected');
-                    
-                    // 直接關閉測驗並進入AI優化流程
-                    setTimeout(() => {
-                        closeQuiz();
-                        startAIOptimization();
-                    }, 500);
-                });
-                
-                optionsContainer.appendChild(optionElement);
-            });
-            
-            document.getElementById('quizModal').style.display = 'flex';
-        }
+            document.getElementById('quizTitle').textContent = currentQuiz.title;
+            document.getElementById('question').textContent = currentQuiz.question;
+            
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            currentQuiz.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.dataset.index = index;
+                
+                optionElement.addEventListener('click', function() {
+                    // 移除之前的選擇
+                    document.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // 選擇當前選項
+                    this.classList.add('selected');
+                    
+                    // 直接關閉測驗並進入AI優化流程 (這一步取代了模態框的提交按鈕)
+                    setTimeout(() => {
+                        closeQuiz();
+                        startAIOptimization();
+                    }, 500);
+                });
+                
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            document.getElementById('quizModal').style.display = 'flex';
+        }
 
-        // 關閉測驗 (保留)
-        function closeQuiz() {
-            document.getElementById('quizModal').style.display = 'none';
-        }
+        // 關閉測驗 (保留)
+        function closeQuiz() {
+            document.getElementById('quizModal').style.display = 'none';
+        }
 
-        // 開始AI優化流程 (保留)
-        function startAIOptimization() {
-            // 顯示代碼編輯器
-            document.getElementById('codeEditor').style.display = 'block';
-            // 顯示項目編號區域
-            document.getElementById('projectSection').style.display = 'block';
-            document.getElementById('aiOptimizationComplete').style.display = 'none';
-            
-            // 啟動代碼編輯器的打字效果
-            codeEditorInstance.startTyping();
-        }
+        // 開始AI優化流程 (在選擇答案後立即觸發)
+        function startAIOptimization() {
+            // 隱藏不相關的元素
+            document.getElementById('projectSection').style.display = 'none';
+            document.getElementById('aiOptimizationComplete').style.display = 'none';
+            
+            // 顯示代碼編輯器
+            document.getElementById('codeEditor').style.display = 'block';
+            
+            // 啟動代碼編輯器的打字效果
+            codeEditorInstance.startTyping();
+        }
 
-        // 初始化
-        let codeEditorInstance; 
-        
-        window.addEventListener('load', function() {
-            codeEditorInstance = initCodeEditor();
-            // initCharts(); // 刪除圖表初始化調用
-            updateProjectId();
-            
-            // 項目編號提交按鈕
-            document.getElementById('submitProject').addEventListener('click', submitProject);
-            
-            // *** 點擊 3D 容器時執行點擊計數檢查和測驗邏輯 ***
-            const chipContainer = document.querySelector('.chip-container');
-            if (chipContainer) {
-                chipContainer.addEventListener('click', function() {
+        // 初始化
+        let codeEditorInstance; 
+        
+        window.addEventListener('load', function() {
+            codeEditorInstance = initCodeEditor();
+            updateProjectId();
+            
+            // 項目編號提交按鈕 (現在這個按鈕用來結束 AI 優化流程並重設)
+            document.getElementById('submitProject').addEventListener('click', submitProject);
+            
+            // *** 點擊 3D 模型時執行點擊計數檢查和測驗邏輯 ***
+            const chipViewer = document.getElementById('chipViewer'); // 直接綁定 model-viewer
+            if (chipViewer) {
+                chipViewer.addEventListener('click', function(event) {
+                    // 避免在模型加載或處理時意外觸發
+                    if (document.getElementById('quizModal').style.display === 'flex' || 
+                        document.getElementById('codeEditor').style.display === 'block') {
+                        return; // 如果彈窗或代碼正在運行，則忽略點擊
+                    }
+
                     clickCount++;
-                    const chipViewer = document.getElementById('chipViewer');
-
+                    
                     if (clickCount >= MAX_CLICKS) {
-                        showQuiz('quiz1'); // 點擊計數達到後顯示測驗
-                        clickCount = 0; // 重設計數器
+                        // 點擊計數達到後顯示當前索引對應的測驗
+                        showQuiz(QUIZ_IDS[currentQuizIndex]);
+                        // 注意: clickCount 在 showQuiz 裡被重置為 0
                     } else if (chipViewer) {
-                        // 如果未達到次數，則阻止模型旋轉，讓用戶知道有互動
+                        // 如果未達到次數，用戶可以自由旋轉/縮放模型
+                        // 移除自動旋轉，讓用戶交互優先，點擊三次再開始問答
                         chipViewer.removeAttribute('auto-rotate'); 
                     }
-                });
-            }
-        });
+                });
+            }
+        });
     </script>
 </body>
 </html>
