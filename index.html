@@ -7,411 +7,149 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* CSS Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        /* --- CSS Styles --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #0a0a1a;
-            color: #e0e0ff;
-            line-height: 1.6;
-            overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(74, 138, 255, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(255, 74, 138, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.03) 0%, transparent 30%);
+            margin: 0; padding: 0; background-color: #0a0a1a; color: #e0e0ff; line-height: 1.6; overflow-x: hidden;
+            background-image: radial-gradient(circle at 10% 20%, rgba(74, 138, 255, 0.05) 0%, transparent 20%),
+                            radial-gradient(circle at 90% 80%, rgba(255, 74, 138, 0.05) 0%, transparent 20%),
+                            radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.03) 0%, transparent 30%);
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
 
         header {
-            text-align: center;
-            padding: 30px 0;
-            background: linear-gradient(to right, #0a0a1a, #1a1a3a, #0a0a1a);
-            border-bottom: 1px solid #2a2a5a;
-            margin-bottom: 30px;
-            border-radius: 10px;
-            position: relative;
-            overflow: hidden;
+            text-align: center; padding: 30px 0; background: linear-gradient(to right, #0a0a1a, #1a1a3a, #0a0a1a);
+            border-bottom: 1px solid #2a2a5a; margin-bottom: 30px; border-radius: 10px; position: relative; overflow: hidden;
         }
-
         header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
             background: linear-gradient(to right, transparent, #00ffff, transparent);
             animation: headerGlow 3s ease-in-out infinite alternate;
         }
-
-        @keyframes headerGlow {
-            0% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
+        @keyframes headerGlow { 0% { opacity: 0.3; } 100% { opacity: 1; } }
 
         h1 {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, #00ffff, #ff00ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-            letter-spacing: 1px;
-            position: relative;
-            display: inline-block;
+            font-size: 2.8rem; margin-bottom: 10px; background: linear-gradient(to right, #00ffff, #ff00ff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.5); letter-spacing: 1px; position: relative; display: inline-block;
         }
-
         h1::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(to right, #00ffff, #ff00ff);
-            transform: scaleX(0);
-            transition: transform 0.5s ease;
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(to right, #00ffff, #ff00ff); transform: scaleX(0); transition: transform 0.5s ease;
         }
+        h1:hover::after { transform: scaleX(1); transform-origin: left; }
 
-        h1:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-
-        .animation-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 40px;
-        }
+        .animation-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; }
 
         .chip-container {
-            width: 100%;
-            height: 600px; 
-            background-color: #0f0f2a;
-            border: 1px solid #2a2a5a;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            position: relative;
+            width: 100%; height: 600px; background-color: #0f0f2a; border: 1px solid #2a2a5a;
+            border-radius: 10px; overflow: hidden; margin-bottom: 20px; position: relative;
             box-shadow: 0 0 25px rgba(0, 100, 255, 0.3);
+            cursor: pointer; /* Indicate clickable */
         }
 
-        model-viewer {
-            width: 100%;
-            height: 100%;
-            background-color: #0f0f2a;
-        }
-        
-        .chip-overlay, .chip-controls, .chip-speed-indicator {
-            display: none !important; 
-        }
+        model-viewer { width: 100%; height: 100%; background-color: #0f0f2a; }
 
         .code-editor-container {
-            width: 100%;
-            height: 200px;
-            background-color: #0a0a1a;
-            border: 1px solid #2a2a5a;
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 0 15px rgba(0, 200, 255, 0.2);
-            display: none; 
+            width: 100%; height: 200px; background-color: #0a0a1a; border: 1px solid #2a2a5a;
+            border-radius: 10px; overflow: hidden; position: relative;
+            box-shadow: 0 0 15px rgba(0, 200, 255, 0.2); display: none;
         }
-
         .code-header {
-            background: linear-gradient(to right, #1a1a3a, #2a2a5a);
-            padding: 8px 15px;
-            border-bottom: 1px solid #3a3a7a;
-            display: flex;
-            align-items: center;
-            font-family: monospace;
-            font-size: 0.9rem;
-            color: #a0a0ff;
+            background: linear-gradient(to right, #1a1a3a, #2a2a5a); padding: 8px 15px;
+            border-bottom: 1px solid #3a3a7a; display: flex; align-items: center;
+            font-family: monospace; font-size: 0.9rem; color: #a0a0ff;
         }
-
-        .code-dots {
-            display: flex;
-            gap: 6px;
-            margin-right: 15px;
-        }
-
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .dot.red { background-color: #ff5f57; }
-        .dot.yellow { background-color: #ffbd2e; }
-        .dot.green { background-color: #28ca42; }
-
+        .code-dots { display: flex; gap: 6px; margin-right: 15px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot.red { background-color: #ff5f57; } .dot.yellow { background-color: #ffbd2e; } .dot.green { background-color: #28ca42; }
+        
         .code-body {
-            height: calc(100% - 40px);
-            padding: 15px;
-            overflow: hidden;
-            position: relative;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            color: #e0e0ff;
-            background-color: #0a0a2a;
-            line-height: 1.4;
+            height: calc(100% - 40px); padding: 15px; overflow: hidden; position: relative;
+            font-family: 'Courier New', monospace; font-size: 14px; color: #e0e0ff;
+            background-color: #0a0a2a; line-height: 1.4;
         }
-
-        .code-line {
-            display: flex;
-            margin-bottom: 2px;
-            opacity: 0;
-            animation: fadeInLine 0.5s forwards;
-        }
-
-        @keyframes fadeInLine {
-            to { opacity: 1; }
-        }
-
-        .line-number {
-            color: #6a6a8a;
-            margin-right: 15px;
-            min-width: 30px;
-            text-align: right;
-            user-select: none;
-        }
-
-        .code-content {
-            flex-grow: 1;
-            white-space: pre-wrap;
-        }
-
-        .keyword { color: #ff79c6; }
-        .function { color: #50fa7b; }
-        .variable { color: #8be9fd; }
-        .string { color: #f1fa8c; }
-        .number { color: #bd93f9; }
-        .comment { color: #6272a4; }
-        .operator { color: #ff79c6; }
+        .code-line { display: flex; margin-bottom: 2px; opacity: 0; animation: fadeInLine 0.5s forwards; }
+        @keyframes fadeInLine { to { opacity: 1; } }
+        .line-number { color: #6a6a8a; margin-right: 15px; min-width: 30px; text-align: right; user-select: none; }
+        .code-content { flex-grow: 1; white-space: pre-wrap; }
+        
+        /* Syntax Highlighting */
+        .keyword { color: #ff79c6; } .function { color: #50fa7b; } .variable { color: #8be9fd; }
+        .string { color: #f1fa8c; } .number { color: #bd93f9; } .comment { color: #6272a4; } .operator { color: #ff79c6; }
 
         .ai-optimization-complete {
-            display: none;
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(to right, #1a1a3a, #2a2a5a);
-            border: 1px solid #4a8aff;
-            border-radius: 10px;
-            margin-top: 20px;
-            box-shadow: 0 0 20px rgba(74, 138, 255, 0.3);
+            display: none; text-align: center; padding: 20px; background: linear-gradient(to right, #1a1a3a, #2a2a5a);
+            border: 1px solid #4a8aff; border-radius: 10px; margin-top: 20px; box-shadow: 0 0 20px rgba(74, 138, 255, 0.3);
         }
-
-        .ai-optimization-complete h3 {
-            color: #4a8aff;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-
-        .ai-optimization-complete p {
-            color: #e0e0ff;
-            font-size: 1.1rem;
-        }
-
-        .data-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 25px;
-            margin: 40px 0;
-        }
+        .ai-optimization-complete h3 { color: #4a8aff; font-size: 1.5rem; margin-bottom: 10px; }
+        .ai-optimization-complete p { color: #e0e0ff; font-size: 1.1rem; }
 
         .project-section {
-            text-align: center;
-            margin: 20px 0;
-            padding: 20px;
-            background: linear-gradient(to right, #0f0f2a, #1a1a3a);
-            border-radius: 10px;
-            border: 1px solid #2a2a5a;
-            display: none; 
+            text-align: center; margin: 20px 0; padding: 20px; background: linear-gradient(to right, #0f0f2a, #1a1a3a);
+            border-radius: 10px; border: 1px solid #2a2a5a; display: none;
         }
-
         .project-id {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #4a8aff;
-            margin-bottom: 15px;
-            text-shadow: 0 0 10px rgba(74, 138, 255, 0.5);
+            font-size: 1.8rem; font-weight: bold; color: #4a8aff; margin-bottom: 15px; text-shadow: 0 0 10px rgba(74, 138, 255, 0.5);
         }
-
         .project-submit-btn {
-            padding: 12px 30px;
-            background: linear-gradient(to right, #2a5a7a, #3a7a9a);
-            color: #e0e0ff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1.1rem;
-            font-weight: 500;
+            padding: 12px 30px; background: linear-gradient(to right, #2a5a7a, #3a7a9a); color: #e0e0ff;
+            border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-size: 1.1rem; font-weight: 500;
         }
+        .project-submit-btn:hover { background: linear-gradient(to right, #3a7a9a, #4a9aba); box-shadow: 0 0 15px rgba(0, 200, 255, 0.5); transform: translateY(-3px); }
 
-        .project-submit-btn:hover {
-            background: linear-gradient(to right, #3a7a9a, #4a9aba);
-            box-shadow: 0 0 15px rgba(0, 200, 255, 0.5);
-            transform: translateY(-3px);
-        }
-        
+        /* Modal Styles */
         .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); z-index: 1000; justify-content: center; align-items: center;
         }
-
         .modal-content {
-            background: linear-gradient(to bottom, #1a1a3a, #0a0a2a);
-            width: 90%;
-            max-width: 700px;
-            border-radius: 10px;
-            border: 1px solid #4a4a8a;
-            box-shadow: 0 0 40px rgba(0, 100, 255, 0.5);
-            overflow: hidden;
-            transform: scale(0.9);
-            opacity: 0;
-            animation: modalAppear 0.3s forwards;
+            background: linear-gradient(to bottom, #1a1a3a, #0a0a2a); width: 90%; max-width: 700px;
+            border-radius: 10px; border: 1px solid #4a4a8a; box-shadow: 0 0 40px rgba(0, 100, 255, 0.5);
+            overflow: hidden; transform: scale(0.9); opacity: 0; animation: modalAppear 0.3s forwards;
         }
-
-        @keyframes modalAppear {
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
+        @keyframes modalAppear { to { transform: scale(1); opacity: 1; } }
         .modal-header {
-            padding: 15px 20px;
-            background: linear-gradient(to right, #2a2a5a, #3a3a7a);
-            border-bottom: 1px solid #4a4a8a;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 15px 20px; background: linear-gradient(to right, #2a2a5a, #3a3a7a); border-bottom: 1px solid #4a4a8a;
+            display: flex; justify-content: space-between; align-items: center;
         }
-
-        .modal-title {
-            font-size: 1.3rem;
-            color: #e0e0ff;
-        }
-        
-        .modal-body {
-            padding: 20px;
-        }
-
-        .question {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: #e0e0ff;
-        }
-
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
+        .modal-title { font-size: 1.3rem; color: #e0e0ff; }
+        .modal-body { padding: 20px; }
+        .question { font-size: 1.2rem; margin-bottom: 20px; color: #e0e0ff; }
+        .options { display: flex; flex-direction: column; gap: 10px; }
         .option {
-            padding: 12px 15px;
-            background-color: #1a1a3a;
-            border: 1px solid #3a3a7a;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            padding: 12px 15px; background-color: #1a1a3a; border: 1px solid #3a3a7a; border-radius: 5px;
+            cursor: pointer; transition: all 0.2s ease;
         }
+        .option:hover { background-color: #2a2a5a; border-color: #5a5aaa; }
+        .option.selected { background-color: #2a5a7a; border-color: #7abbe0; }
 
-        .option:hover {
-            background-color: #2a2a5a;
-            border-color: #5a5aaa;
-        }
-
-        .option.selected {
-            background-color: #2a5a7a;
-            border-color: #7abbe0;
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         footer {
-            text-align: center;
-            padding: 25px 0;
-            margin-top: 40px;
-            border-top: 1px solid #2a2a5a;
-            color: #8080c0;
-            font-size: 0.9rem;
-            position: relative;
+            text-align: center; padding: 25px 0; margin-top: 40px; border-top: 1px solid #2a2a5a;
+            color: #8080c0; font-size: 0.9rem; position: relative;
         }
-        
         footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px;
             background: linear-gradient(to right, transparent, #00ffff, transparent);
         }
 
+        /* Mobile Optimization */
         @media (max-width: 768px) {
-            h1 { font-size: 2.2rem; }
-            .chip-container { height: 400px; }
-            .data-section { grid-template-columns: 1fr; }
-            .code-editor-container { height: 180px; }
-            .code-body { font-size: 12px; padding: 10px; }
-            .project-id { font-size: 1.5rem; }
-            .modal-content { width: 95%; }
-            .modal-header { padding: 10px 15px; }
-            .modal-body { padding: 15px; }
-            .question { font-size: 1.1rem; }
-            .option { padding: 10px 12px; }
+            h1 { font-size: 2.2rem; } .chip-container { height: 400px; } .code-editor-container { height: 180px; }
+            .project-id { font-size: 1.5rem; } .modal-content { width: 95%; }
         }
-
         @media (max-width: 480px) {
-            h1 { font-size: 1.8rem; }
-            .chip-container { height: 300px; }
-            .code-editor-container { height: 150px; }
-            .code-body { font-size: 10px; }
-            .project-submit-btn { padding: 8px 15px; font-size: 0.85rem; }
-            .project-id { font-size: 1.3rem; }
+            h1 { font-size: 1.8rem; } .chip-container { height: 300px; } .code-editor-container { height: 150px; }
+            .project-submit-btn { padding: 8px 15px; font-size: 0.85rem; } .project-id { font-size: 1.3rem; }
         }
-
         @media (max-width: 360px) {
-            .container { padding: 10px; }
-            h1 { font-size: 1.5rem; }
-            .chip-container { height: 250px; }
-            .code-editor-container { height: 130px; }
-            .project-id { font-size: 1.2rem; }
+            .container { padding: 10px; } h1 { font-size: 1.5rem; } .chip-container { height: 250px; } .code-editor-container { height: 130px; }
         }
     </style>
 </head>
@@ -433,6 +171,7 @@
                     autoplay
                     exposure="1.2"
                     shadow-softness="0.5"
+                    interaction-prompt="none"
                 >
                 </model-viewer>
             </div>
@@ -447,17 +186,17 @@
                     <span>ai_process_optimization.js</span>
                 </div>
                 <div class="code-body" id="codeBody">
-                    </div>
-            </div>
-            
-            <div class="project-section" id="projectSection">
-                <div class="project-id" id="projectId">Ai-Mod-202511-00001</div>
-                <button id="submitProject" class="project-submit-btn">確認提交</button>
+                </div>
             </div>
             
             <div class="ai-optimization-complete" id="aiOptimizationComplete">
                 <h3>AI製程已優化</h3>
-                <p>請依照提示繼續優化製程</p>
+                <p>依照提示繼續優化製程</p>
+            </div>
+
+            <div class="project-section" id="projectSection">
+                <div class="project-id" id="projectId">Ai-Mod-202511-00001</div>
+                <button id="submitProject" class="project-submit-btn">確認提交</button>
             </div>
         </section>
 
@@ -467,7 +206,7 @@
         </section>
 
         <footer>
-            <p>AI Semiconductor Manufacturing Process &copy; </p>
+            <p>AI Semiconductor Manufacturing Process &copy; 2025</p>
         </footer>
     </div>
 
@@ -475,64 +214,65 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title" id="quizTitle">AI Process Optimization Selection</div>
-                </div>
+            </div>
             <div class="modal-body">
                 <div class="question" id="question">Please select your preferred optimization approach:</div>
                 <div class="options" id="options">
-                    </div>
+                </div>
             </div>
-            </div>
+        </div>
     </div>
 
     <script>
-        // --- Variables ---
-        let clickCount = 0;
+        // --- Configuration & State ---
         const MAX_CLICKS = 3;
-        let clickResetTimer = null; 
+        const CLICK_TIMEOUT = 500; // 500ms timeout for consecutive clicks (standard double/triple click speed)
+        const QUIZ_IDS = ['quiz1', 'quiz2', 'quiz3', 'quiz4'];
         
-        // Quiz Cycle Logic
-        const QUIZ_IDS = ['quiz1', 'quiz2', 'quiz3', 'quiz4']; 
-        let currentQuizIndex = 0; 
-        
+        let clickCount = 0;
+        let clickTimer = null;
+        let currentQuizIndex = 0; // Starts at Quiz 1
+        let projectCounter = 1; // Starts at 00001
         let typingInterval;
-        let projectCounter = 1;
         
-        // Quiz Data (English)
+        // Quiz Data (All English)
         const quizData = {
             quiz1: {
                 title: "EDA Process Optimization",
-                question: "Please select your preferred EDA optimization approach:",
+                question: "Select preferred EDA optimization approach:",
                 options: ["A. Logic Synthesis Optimization", "B. Physical Design Optimization", "C. Timing Analysis Optimization", "D. Power Optimization"]
             },
             quiz2: {
                 title: "FEOKL Process Optimization",
-                question: "Please select your preferred FEOKL optimization approach:",
+                question: "Select preferred FEOKL optimization approach:",
                 options: ["A. Feature Extraction Optimization", "B. Knowledge Learning Optimization", "C. Model Training Optimization", "D. Inference Acceleration"]
             },
             quiz3: {
                 title: "YLELD Process Optimization",
-                question: "Please select your preferred YLELD optimization approach:",
+                question: "Select preferred YLELD optimization approach:",
                 options: ["A. Yield Prediction Optimization", "B. Defect Analysis Optimization", "C. Process Control Optimization", "D. Quality Assurance Optimization"]
             },
             quiz4: {
                 title: "P&T Process Optimization",
-                question: "Please select your preferred P&T optimization approach:",
+                question: "Select preferred P&T optimization approach:",
                 options: ["A. Performance Optimization", "B. Thermal Management Optimization", "C. Power-Performance Trade-off", "D. Reliability Optimization"]
             }
         };
 
         let currentQuiz = null;
+        let codeEditorInstance; 
 
-        // --- Core Functions ---
+        // --- Functions ---
 
-        // 1. Code Editor Typing Effect
+        // 1. Code Typing Animation
         function initCodeEditor() {
             const codeBody = document.getElementById('codeBody');
+            // Dummy code snippets for visual effect
             const codeSnippets = [
-                `class AISemiconductorProcess {\n  constructor(processNode) {\n    this.processNode = processNode;\n    this.yield = 0.95;\n  }\n  optimize() {\n    console.log('Optimizing process...');\n    return this.yield + 0.02;\n  }\n}\n\nconst process = new AISemiconductorProcess('3nm');\nprocess.optimize();`,
-                `// Deep Learning Model Training\nconst model = tf.sequential();\nmodel.add(tf.layers.dense({units: 100, activation: 'relu', inputShape: [10]}));\nmodel.add(tf.layers.dense({units: 1, activation: 'linear'}));\nmodel.compile({optimizer: 'sgd', loss: 'meanSquaredError'});\nconsole.log('Model compiled');`,
-                `// Defect Analysis System\nfunction analyzeWafer(waferData) {\n  let defects = 0;\n  for(let region of waferData) {\n    if(region.signal > threshold) defects++;\n  }\n  return defects / waferData.length;\n}\nconsole.log('Defect rate calculated');`,
-                `// Thermal Management\nif (currentTemp > MAX_TEMP) {\n  throttleClockSpeed();\n  increaseFanSpeed();\n  logWarning('Temperature critical');\n} else {\n  maintainPerformance();\n}\nconsole.log('Thermal check complete');`
+                `class AISemiconductorProcess {\n  optimize() {\n    console.log('Optimizing process nodes...');\n    this.yield += 0.02;\n    return this.yield;\n  }\n}`,
+                `// Training Neural Network\nconst model = tf.sequential();\nmodel.add(tf.layers.dense({units: 128, activation: 'relu'}));\nmodel.compile({loss: 'mse'});\nconsole.log('Training started...');`,
+                `// Defect Detection Algorithm\nfunction scanWafer(surface) {\n  let defects = surface.findAnomalies();\n  return defects.length > 0 ? 'Flagged' : 'Pass';\n}\nconsole.log('Scan complete.');`,
+                `// Thermal Regulation\nif (temp > CRITICAL_LIMIT) {\n  activateCoolingSystem();\n  throttlePerformance(0.9);\n} else {\n  maintainState();\n}\nconsole.log('Thermal check OK.');`
             ];
             
             let currentLine = 0;
@@ -552,19 +292,24 @@
                 if (currentLine < codeLines.length) {
                     const lineElement = document.createElement('div');
                     lineElement.className = 'code-line';
+                    
                     const lineNumber = document.createElement('span');
                     lineNumber.className = 'line-number';
                     lineNumber.textContent = (currentLine + 1).toString();
+                    
                     const codeContent = document.createElement('span');
                     codeContent.className = 'code-content';
                     codeContent.innerHTML = highlightCode(codeLines[currentLine]);
+                    
                     lineElement.appendChild(lineNumber);
                     lineElement.appendChild(codeContent);
                     codeBody.appendChild(lineElement);
                     codeBody.scrollTop = codeBody.scrollHeight;
+                    
                     currentLine++;
                 } else {
                     clearInterval(typingInterval);
+                    // Finish typing: hide editor, show complete message and button
                     setTimeout(() => {
                         document.getElementById('codeEditor').style.display = 'none';
                         document.getElementById('aiOptimizationComplete').style.display = 'block';
@@ -583,55 +328,62 @@
                 currentLine = 0;
                 const snippetIndex = currentQuizIndex % codeSnippets.length;
                 codeLines = parseCodeSnippet(codeSnippets[snippetIndex]);
-                typingInterval = setInterval(typeNextLine, 150); 
+                typingInterval = setInterval(typeNextLine, 100); 
             }
             
             return { startTyping: startTyping };
         }
 
-        // 2. Reset Model View
+        // 2. Reset 3D Model View
         function resetModelView() {
             const modelViewer = document.getElementById('chipViewer');
             if (modelViewer) {
-                modelViewer.setAttribute('auto-rotate', 'true');
-                modelViewer.cameraOrbit = '0deg 75deg auto';
+                // Reset camera orbit to default front view
+                modelViewer.cameraOrbit = '0deg 75deg 105%';
+                // Reset camera target to center
                 modelViewer.cameraTarget = 'auto';
-                modelViewer.fieldOfView = 'auto';
+                // Resume rotation
+                modelViewer.setAttribute('auto-rotate', 'true');
             }
         }
 
-        // 3. Update Project ID
-        function updateProjectId() {
+        // 3. Update Project ID Display
+        function updateProjectIdDisplay() {
             const projectIdElement = document.getElementById('projectId');
-            projectCounter++; // Increment
             const counterStr = projectCounter.toString().padStart(5, '0');
             projectIdElement.textContent = `Ai-Mod-202511-${counterStr}`;
         }
         
-        // 4. Submit Logic (Cycle to next quiz)
+        // 4. Submit Project Logic (The Core Cycle Logic)
         function submitProject() {
             const submitBtn = document.getElementById('submitProject');
             const originalText = submitBtn.textContent;
             submitBtn.textContent = '提交成功';
             
             setTimeout(() => {
+                // Hide submission area
                 document.getElementById('projectSection').style.display = 'none';
-                submitBtn.textContent = '確認提交'; // Reset text
+                submitBtn.textContent = originalText;
                 
-                // ** Increment Project ID here **
-                updateProjectId();
+                // --- Core Logic Updates ---
                 
-                // ** Cycle to the next quiz **
+                // 1. Increment Project ID for next time
+                projectCounter++;
+                updateProjectIdDisplay();
+                
+                // 2. Cycle to the next Quiz Index (0 -> 1 -> 2 -> 3 -> 0 ...)
                 currentQuizIndex = (currentQuizIndex + 1) % QUIZ_IDS.length;
-                console.log("Next Quiz Index:", currentQuizIndex);
                 
+                // 3. Reset Model Position
                 resetModelView();
+                
+                // 4. Reset Click Counter just in case
                 clickCount = 0;
                 
-            }, 1000);
+            }, 1500);
         }
 
-        // 5. Show Quiz
+        // 5. Show Quiz Modal
         function showQuiz() {
             const quizId = QUIZ_IDS[currentQuizIndex];
             currentQuiz = quizData[quizId];
@@ -649,12 +401,15 @@
                 optionElement.dataset.index = index;
                 
                 optionElement.addEventListener('click', function() {
+                    // Visual selection
                     document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
                     this.classList.add('selected');
                     
+                    // Proceed to AI Optimization
                     setTimeout(() => {
-                        closeQuiz();
-                        startAIOptimization();
+                        document.getElementById('quizModal').style.display = 'none';
+                        document.getElementById('codeEditor').style.display = 'block';
+                        codeEditorInstance.startTyping();
                     }, 500);
                 });
                 
@@ -663,55 +418,46 @@
             
             document.getElementById('quizModal').style.display = 'flex';
             
+            // Pause rotation when quiz is open
             const modelViewer = document.getElementById('chipViewer');
             if(modelViewer) modelViewer.removeAttribute('auto-rotate');
         }
 
-        function closeQuiz() {
-            document.getElementById('quizModal').style.display = 'none';
-        }
-
-        function startAIOptimization() {
-            document.getElementById('codeEditor').style.display = 'block';
-            codeEditorInstance.startTyping();
-        }
-
         // --- Initialization ---
-        let codeEditorInstance; 
-        
         window.addEventListener('load', function() {
             codeEditorInstance = initCodeEditor();
-            // Initial Project ID setting (start at 00001)
-            const projectIdElement = document.getElementById('projectId');
-            projectIdElement.textContent = `Ai-Mod-202511-00001`;
+            updateProjectIdDisplay();
             
             document.getElementById('submitProject').addEventListener('click', submitProject);
             
-            // *** 3-Click Logic with Timeout ***
+            // *** 3D Model Click Event Listener ***
             const chipViewer = document.getElementById('chipViewer');
             
             if (chipViewer) {
-                chipViewer.addEventListener('click', function(event) {
+                chipViewer.addEventListener('click', (event) => {
+                    // If UI is active, ignore model clicks
                     if (document.getElementById('quizModal').style.display === 'flex' || 
                         document.getElementById('codeEditor').style.display === 'block' ||
                         document.getElementById('projectSection').style.display === 'block') {
                         return;
                     }
 
-                    if (clickResetTimer) clearTimeout(clickResetTimer);
+                    // Clear previous timer
+                    if (clickTimer) clearTimeout(clickTimer);
 
                     clickCount++;
-                    console.log("Click count:", clickCount);
+                    console.log(`Click count: ${clickCount}`);
 
                     if (clickCount >= MAX_CLICKS) {
+                        // Trigger Action
                         showQuiz();
-                        clickCount = 0; 
+                        clickCount = 0; // Reset
                     } else {
-                        // Reset if not clicked again within 1 second
-                        clickResetTimer = setTimeout(() => {
+                        // Set timer to reset count if user stops clicking
+                        clickTimer = setTimeout(() => {
                             clickCount = 0;
-                            console.log("Click count reset to 0");
-                        }, 1000); 
+                            console.log("Click count reset due to timeout");
+                        }, CLICK_TIMEOUT);
                     }
                 });
             }
