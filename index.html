@@ -7,149 +7,413 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* --- CSS Styles --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        /* CSS Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
         body {
-            margin: 0; padding: 0; background-color: #0a0a1a; color: #e0e0ff; line-height: 1.6; overflow-x: hidden;
-            background-image: radial-gradient(circle at 10% 20%, rgba(74, 138, 255, 0.05) 0%, transparent 20%),
-                            radial-gradient(circle at 90% 80%, rgba(255, 74, 138, 0.05) 0%, transparent 20%),
-                            radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.03) 0%, transparent 30%);
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a1a;
+            color: #e0e0ff;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(74, 138, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 74, 138, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.03) 0%, transparent 30%);
         }
 
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
         header {
-            text-align: center; padding: 30px 0; background: linear-gradient(to right, #0a0a1a, #1a1a3a, #0a0a1a);
-            border-bottom: 1px solid #2a2a5a; margin-bottom: 30px; border-radius: 10px; position: relative; overflow: hidden;
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(to right, #0a0a1a, #1a1a3a, #0a0a1a);
+            border-bottom: 1px solid #2a2a5a;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
         }
+
         header::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
             background: linear-gradient(to right, transparent, #00ffff, transparent);
             animation: headerGlow 3s ease-in-out infinite alternate;
         }
-        @keyframes headerGlow { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        @keyframes headerGlow {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
 
         h1 {
-            font-size: 2.8rem; margin-bottom: 10px; background: linear-gradient(to right, #00ffff, #ff00ff);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 15px rgba(0, 255, 255, 0.5); letter-spacing: 1px; position: relative; display: inline-block;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            letter-spacing: 1px;
+            position: relative;
+            display: inline-block;
         }
-        h1::after {
-            content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(to right, #00ffff, #ff00ff); transform: scaleX(0); transition: transform 0.5s ease;
-        }
-        h1:hover::after { transform: scaleX(1); transform-origin: left; }
 
-        .animation-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; }
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, #00ffff, #ff00ff);
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+
+        h1:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .animation-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 40px;
+        }
 
         .chip-container {
-            width: 100%; height: 600px; background-color: #0f0f2a; border: 1px solid #2a2a5a;
-            border-radius: 10px; overflow: hidden; margin-bottom: 20px; position: relative;
+            width: 100%;
+            height: 600px; 
+            background-color: #0f0f2a;
+            border: 1px solid #2a2a5a;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
             box-shadow: 0 0 25px rgba(0, 100, 255, 0.3);
-            cursor: pointer; /* Indicate clickable */
+            /* Ensure the container captures clicks */
+            cursor: pointer;
         }
 
-        model-viewer { width: 100%; height: 100%; background-color: #0f0f2a; }
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            background-color: #0f0f2a;
+        }
+        
+        .chip-overlay, .chip-controls, .chip-speed-indicator {
+            display: none !important; 
+        }
 
         .code-editor-container {
-            width: 100%; height: 200px; background-color: #0a0a1a; border: 1px solid #2a2a5a;
-            border-radius: 10px; overflow: hidden; position: relative;
-            box-shadow: 0 0 15px rgba(0, 200, 255, 0.2); display: none;
+            width: 100%;
+            height: 200px;
+            background-color: #0a0a1a;
+            border: 1px solid #2a2a5a;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0, 200, 255, 0.2);
+            display: none; 
         }
+
         .code-header {
-            background: linear-gradient(to right, #1a1a3a, #2a2a5a); padding: 8px 15px;
-            border-bottom: 1px solid #3a3a7a; display: flex; align-items: center;
-            font-family: monospace; font-size: 0.9rem; color: #a0a0ff;
+            background: linear-gradient(to right, #1a1a3a, #2a2a5a);
+            padding: 8px 15px;
+            border-bottom: 1px solid #3a3a7a;
+            display: flex;
+            align-items: center;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #a0a0ff;
         }
-        .code-dots { display: flex; gap: 6px; margin-right: 15px; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; }
-        .dot.red { background-color: #ff5f57; } .dot.yellow { background-color: #ffbd2e; } .dot.green { background-color: #28ca42; }
-        
+
+        .code-dots {
+            display: flex;
+            gap: 6px;
+            margin-right: 15px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.red { background-color: #ff5f57; }
+        .dot.yellow { background-color: #ffbd2e; }
+        .dot.green { background-color: #28ca42; }
+
         .code-body {
-            height: calc(100% - 40px); padding: 15px; overflow: hidden; position: relative;
-            font-family: 'Courier New', monospace; font-size: 14px; color: #e0e0ff;
-            background-color: #0a0a2a; line-height: 1.4;
+            height: calc(100% - 40px);
+            padding: 15px;
+            overflow: hidden;
+            position: relative;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #e0e0ff;
+            background-color: #0a0a2a;
+            line-height: 1.4;
         }
-        .code-line { display: flex; margin-bottom: 2px; opacity: 0; animation: fadeInLine 0.5s forwards; }
-        @keyframes fadeInLine { to { opacity: 1; } }
-        .line-number { color: #6a6a8a; margin-right: 15px; min-width: 30px; text-align: right; user-select: none; }
-        .code-content { flex-grow: 1; white-space: pre-wrap; }
-        
-        /* Syntax Highlighting */
-        .keyword { color: #ff79c6; } .function { color: #50fa7b; } .variable { color: #8be9fd; }
-        .string { color: #f1fa8c; } .number { color: #bd93f9; } .comment { color: #6272a4; } .operator { color: #ff79c6; }
+
+        .code-line {
+            display: flex;
+            margin-bottom: 2px;
+            opacity: 0;
+            animation: fadeInLine 0.5s forwards;
+        }
+
+        @keyframes fadeInLine {
+            to { opacity: 1; }
+        }
+
+        .line-number {
+            color: #6a6a8a;
+            margin-right: 15px;
+            min-width: 30px;
+            text-align: right;
+            user-select: none;
+        }
+
+        .code-content {
+            flex-grow: 1;
+            white-space: pre-wrap;
+        }
+
+        .keyword { color: #ff79c6; }
+        .function { color: #50fa7b; }
+        .variable { color: #8be9fd; }
+        .string { color: #f1fa8c; }
+        .number { color: #bd93f9; }
+        .comment { color: #6272a4; }
+        .operator { color: #ff79c6; }
 
         .ai-optimization-complete {
-            display: none; text-align: center; padding: 20px; background: linear-gradient(to right, #1a1a3a, #2a2a5a);
-            border: 1px solid #4a8aff; border-radius: 10px; margin-top: 20px; box-shadow: 0 0 20px rgba(74, 138, 255, 0.3);
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(to right, #1a1a3a, #2a2a5a);
+            border: 1px solid #4a8aff;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 0 20px rgba(74, 138, 255, 0.3);
         }
-        .ai-optimization-complete h3 { color: #4a8aff; font-size: 1.5rem; margin-bottom: 10px; }
-        .ai-optimization-complete p { color: #e0e0ff; font-size: 1.1rem; }
+
+        .ai-optimization-complete h3 {
+            color: #4a8aff;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .ai-optimization-complete p {
+            color: #e0e0ff;
+            font-size: 1.1rem;
+        }
+
+        .data-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
 
         .project-section {
-            text-align: center; margin: 20px 0; padding: 20px; background: linear-gradient(to right, #0f0f2a, #1a1a3a);
-            border-radius: 10px; border: 1px solid #2a2a5a; display: none;
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(to right, #0f0f2a, #1a1a3a);
+            border-radius: 10px;
+            border: 1px solid #2a2a5a;
+            display: none; 
         }
+
         .project-id {
-            font-size: 1.8rem; font-weight: bold; color: #4a8aff; margin-bottom: 15px; text-shadow: 0 0 10px rgba(74, 138, 255, 0.5);
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4a8aff;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(74, 138, 255, 0.5);
         }
+
         .project-submit-btn {
-            padding: 12px 30px; background: linear-gradient(to right, #2a5a7a, #3a7a9a); color: #e0e0ff;
-            border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-size: 1.1rem; font-weight: 500;
+            padding: 12px 30px;
+            background: linear-gradient(to right, #2a5a7a, #3a7a9a);
+            color: #e0e0ff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            font-weight: 500;
         }
-        .project-submit-btn:hover { background: linear-gradient(to right, #3a7a9a, #4a9aba); box-shadow: 0 0 15px rgba(0, 200, 255, 0.5); transform: translateY(-3px); }
 
-        /* Modal Styles */
+        .project-submit-btn:hover {
+            background: linear-gradient(to right, #3a7a9a, #4a9aba);
+            box-shadow: 0 0 15px rgba(0, 200, 255, 0.5);
+            transform: translateY(-3px);
+        }
+        
         .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.8); z-index: 1000; justify-content: center; align-items: center;
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
         }
-        .modal-content {
-            background: linear-gradient(to bottom, #1a1a3a, #0a0a2a); width: 90%; max-width: 700px;
-            border-radius: 10px; border: 1px solid #4a4a8a; box-shadow: 0 0 40px rgba(0, 100, 255, 0.5);
-            overflow: hidden; transform: scale(0.9); opacity: 0; animation: modalAppear 0.3s forwards;
-        }
-        @keyframes modalAppear { to { transform: scale(1); opacity: 1; } }
-        .modal-header {
-            padding: 15px 20px; background: linear-gradient(to right, #2a2a5a, #3a3a7a); border-bottom: 1px solid #4a4a8a;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .modal-title { font-size: 1.3rem; color: #e0e0ff; }
-        .modal-body { padding: 20px; }
-        .question { font-size: 1.2rem; margin-bottom: 20px; color: #e0e0ff; }
-        .options { display: flex; flex-direction: column; gap: 10px; }
-        .option {
-            padding: 12px 15px; background-color: #1a1a3a; border: 1px solid #3a3a7a; border-radius: 5px;
-            cursor: pointer; transition: all 0.2s ease;
-        }
-        .option:hover { background-color: #2a2a5a; border-color: #5a5aaa; }
-        .option.selected { background-color: #2a5a7a; border-color: #7abbe0; }
 
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-content {
+            background: linear-gradient(to bottom, #1a1a3a, #0a0a2a);
+            width: 90%;
+            max-width: 700px;
+            border-radius: 10px;
+            border: 1px solid #4a4a8a;
+            box-shadow: 0 0 40px rgba(0, 100, 255, 0.5);
+            overflow: hidden;
+            transform: scale(0.9);
+            opacity: 0;
+            animation: modalAppear 0.3s forwards;
+        }
+
+        @keyframes modalAppear {
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            background: linear-gradient(to right, #2a2a5a, #3a3a7a);
+            border-bottom: 1px solid #4a4a8a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            color: #e0e0ff;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+
+        .question {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #e0e0ff;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background-color: #1a1a3a;
+            border: 1px solid #3a3a7a;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option:hover {
+            background-color: #2a2a5a;
+            border-color: #5a5aaa;
+        }
+
+        .option.selected {
+            background-color: #2a5a7a;
+            border-color: #7abbe0;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
         footer {
-            text-align: center; padding: 25px 0; margin-top: 40px; border-top: 1px solid #2a2a5a;
-            color: #8080c0; font-size: 0.9rem; position: relative;
+            text-align: center;
+            padding: 25px 0;
+            margin-top: 40px;
+            border-top: 1px solid #2a2a5a;
+            color: #8080c0;
+            font-size: 0.9rem;
+            position: relative;
         }
+        
         footer::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px;
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
             background: linear-gradient(to right, transparent, #00ffff, transparent);
         }
 
-        /* Mobile Optimization */
         @media (max-width: 768px) {
-            h1 { font-size: 2.2rem; } .chip-container { height: 400px; } .code-editor-container { height: 180px; }
-            .project-id { font-size: 1.5rem; } .modal-content { width: 95%; }
+            h1 { font-size: 2.2rem; }
+            .chip-container { height: 400px; }
+            .data-section { grid-template-columns: 1fr; }
+            .code-editor-container { height: 180px; }
+            .code-body { font-size: 12px; padding: 10px; }
+            .project-id { font-size: 1.5rem; }
+            .modal-content { width: 95%; }
+            .modal-header { padding: 10px 15px; }
+            .modal-body { padding: 15px; }
+            .question { font-size: 1.1rem; }
+            .option { padding: 10px 12px; }
         }
+
         @media (max-width: 480px) {
-            h1 { font-size: 1.8rem; } .chip-container { height: 300px; } .code-editor-container { height: 150px; }
-            .project-submit-btn { padding: 8px 15px; font-size: 0.85rem; } .project-id { font-size: 1.3rem; }
+            h1 { font-size: 1.8rem; }
+            .chip-container { height: 300px; }
+            .code-editor-container { height: 150px; }
+            .code-body { font-size: 10px; }
+            .project-submit-btn { padding: 8px 15px; font-size: 0.85rem; }
+            .project-id { font-size: 1.3rem; }
         }
+
         @media (max-width: 360px) {
-            .container { padding: 10px; } h1 { font-size: 1.5rem; } .chip-container { height: 250px; } .code-editor-container { height: 130px; }
+            .container { padding: 10px; }
+            h1 { font-size: 1.5rem; }
+            .chip-container { height: 250px; }
+            .code-editor-container { height: 130px; }
+            .project-id { font-size: 1.2rem; }
         }
     </style>
 </head>
@@ -190,8 +454,8 @@
             </div>
             
             <div class="ai-optimization-complete" id="aiOptimizationComplete">
-                <h3>AI製程已優化</h3>
-                <p>依照提示繼續優化製程</p>
+                <h3>製程優化中</h3>
+                <p>請依指示優化製程</p>
             </div>
 
             <div class="project-section" id="projectSection">
@@ -202,11 +466,11 @@
 
         <section class="tab-content active" id="tables-tab">
             <div class="data-section">
-                </div>
+            </div>
         </section>
 
         <footer>
-            <p>AI Semiconductor Manufacturing Process &copy; 2025</p>
+            <p>AI Semiconductor Manufacturing Process &copy;</p>
         </footer>
     </div>
 
@@ -226,16 +490,15 @@
     <script>
         // --- Configuration & State ---
         const MAX_CLICKS = 3;
-        const CLICK_TIMEOUT = 500; // 500ms timeout for consecutive clicks (standard double/triple click speed)
+        const CLICK_TIMEOUT = 500; 
         const QUIZ_IDS = ['quiz1', 'quiz2', 'quiz3', 'quiz4'];
         
         let clickCount = 0;
         let clickTimer = null;
-        let currentQuizIndex = 0; // Starts at Quiz 1
-        let projectCounter = 1; // Starts at 00001
+        let currentQuizIndex = 0; 
+        let projectCounter = 1; 
         let typingInterval;
         
-        // Quiz Data (All English)
         const quizData = {
             quiz1: {
                 title: "EDA Process Optimization",
@@ -267,7 +530,6 @@
         // 1. Code Typing Animation
         function initCodeEditor() {
             const codeBody = document.getElementById('codeBody');
-            // Dummy code snippets for visual effect
             const codeSnippets = [
                 `class AISemiconductorProcess {\n  optimize() {\n    console.log('Optimizing process nodes...');\n    this.yield += 0.02;\n    return this.yield;\n  }\n}`,
                 `// Training Neural Network\nconst model = tf.sequential();\nmodel.add(tf.layers.dense({units: 128, activation: 'relu'}));\nmodel.compile({loss: 'mse'});\nconsole.log('Training started...');`,
@@ -292,24 +554,19 @@
                 if (currentLine < codeLines.length) {
                     const lineElement = document.createElement('div');
                     lineElement.className = 'code-line';
-                    
                     const lineNumber = document.createElement('span');
                     lineNumber.className = 'line-number';
                     lineNumber.textContent = (currentLine + 1).toString();
-                    
                     const codeContent = document.createElement('span');
                     codeContent.className = 'code-content';
                     codeContent.innerHTML = highlightCode(codeLines[currentLine]);
-                    
                     lineElement.appendChild(lineNumber);
                     lineElement.appendChild(codeContent);
                     codeBody.appendChild(lineElement);
                     codeBody.scrollTop = codeBody.scrollHeight;
-                    
                     currentLine++;
                 } else {
                     clearInterval(typingInterval);
-                    // Finish typing: hide editor, show complete message and button
                     setTimeout(() => {
                         document.getElementById('codeEditor').style.display = 'none';
                         document.getElementById('aiOptimizationComplete').style.display = 'block';
@@ -317,8 +574,8 @@
                         setTimeout(() => {
                              document.getElementById('aiOptimizationComplete').style.display = 'none';
                              document.getElementById('projectSection').style.display = 'block';
-                        }, 5000);
-                    }, 1000);
+                        }, 1500);
+                    }, 800);
                 }
             }
             
@@ -338,11 +595,8 @@
         function resetModelView() {
             const modelViewer = document.getElementById('chipViewer');
             if (modelViewer) {
-                // Reset camera orbit to default front view
                 modelViewer.cameraOrbit = '0deg 75deg 105%';
-                // Reset camera target to center
                 modelViewer.cameraTarget = 'auto';
-                // Resume rotation
                 modelViewer.setAttribute('auto-rotate', 'true');
             }
         }
@@ -354,30 +608,22 @@
             projectIdElement.textContent = `Ai-Mod-202511-${counterStr}`;
         }
         
-        // 4. Submit Project Logic (The Core Cycle Logic)
+        // 4. Submit Project Logic
         function submitProject() {
             const submitBtn = document.getElementById('submitProject');
             const originalText = submitBtn.textContent;
             submitBtn.textContent = '提交成功';
             
             setTimeout(() => {
-                // Hide submission area
                 document.getElementById('projectSection').style.display = 'none';
                 submitBtn.textContent = originalText;
                 
-                // --- Core Logic Updates ---
-                
-                // 1. Increment Project ID for next time
                 projectCounter++;
                 updateProjectIdDisplay();
                 
-                // 2. Cycle to the next Quiz Index (0 -> 1 -> 2 -> 3 -> 0 ...)
                 currentQuizIndex = (currentQuizIndex + 1) % QUIZ_IDS.length;
                 
-                // 3. Reset Model Position
                 resetModelView();
-                
-                // 4. Reset Click Counter just in case
                 clickCount = 0;
                 
             }, 1500);
@@ -401,16 +647,14 @@
                 optionElement.dataset.index = index;
                 
                 optionElement.addEventListener('click', function() {
-                    // Visual selection
                     document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
                     this.classList.add('selected');
                     
-                    // Proceed to AI Optimization
                     setTimeout(() => {
                         document.getElementById('quizModal').style.display = 'none';
                         document.getElementById('codeEditor').style.display = 'block';
                         codeEditorInstance.startTyping();
-                    }, 500);
+                    }, 1500);
                 });
                 
                 optionsContainer.appendChild(optionElement);
@@ -418,7 +662,6 @@
             
             document.getElementById('quizModal').style.display = 'flex';
             
-            // Pause rotation when quiz is open
             const modelViewer = document.getElementById('chipViewer');
             if(modelViewer) modelViewer.removeAttribute('auto-rotate');
         }
@@ -430,36 +673,34 @@
             
             document.getElementById('submitProject').addEventListener('click', submitProject);
             
-            // *** 3D Model Click Event Listener ***
-            const chipViewer = document.getElementById('chipViewer');
+            // *** FIX: Listen on the CONTAINER (div) instead of the viewer, and use capture phase ***
+            const chipContainer = document.querySelector('.chip-container');
             
-            if (chipViewer) {
-                chipViewer.addEventListener('click', (event) => {
-                    // If UI is active, ignore model clicks
+            if (chipContainer) {
+                // The 'true' here enables event capturing, which intercepts the click before model-viewer can swallow it.
+                chipContainer.addEventListener('click', (event) => {
+                    // Prevent triggering if UI overlays are active
                     if (document.getElementById('quizModal').style.display === 'flex' || 
                         document.getElementById('codeEditor').style.display === 'block' ||
                         document.getElementById('projectSection').style.display === 'block') {
                         return;
                     }
 
-                    // Clear previous timer
                     if (clickTimer) clearTimeout(clickTimer);
 
                     clickCount++;
-                    console.log(`Click count: ${clickCount}`);
+                    console.log(`Click count: ${clickCount}`); // Check your console (F12) to verify this updates
 
                     if (clickCount >= MAX_CLICKS) {
-                        // Trigger Action
                         showQuiz();
-                        clickCount = 0; // Reset
+                        clickCount = 0; 
                     } else {
-                        // Set timer to reset count if user stops clicking
                         clickTimer = setTimeout(() => {
                             clickCount = 0;
                             console.log("Click count reset due to timeout");
                         }, CLICK_TIMEOUT);
                     }
-                });
+                }, true); // <--- IMPORTANT: Capture phase enabled
             }
         });
     </script>
