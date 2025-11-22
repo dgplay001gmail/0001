@@ -1,708 +1,159 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Semiconductor Manufacturing Process</title>
+    <title>AI 晶片 3D 展示區塊</title>
+
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        /* CSS Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        /* 基礎設置與字體 */
+        body { 
+            margin: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f2f2f2; 
         }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #0a0a1a;
-            color: #e0e0ff;
-            line-height: 1.6;
-            overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(74, 138, 255, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(255, 74, 138, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.03) 0%, transparent 30%);
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
+        /* ------------------------------------- */
+        /* 核心 HERO 區塊樣式 (模擬 Sketchfab 頂部) */
+        /* ------------------------------------- */
+        .hero {
+            /* 藍色漸變背景 */
+            background: linear-gradient(180deg, #184c7e 0%, #297be7 100%);
+            color: white;
+            padding: 80px 20px 60px;
             text-align: center;
-            padding: 30px 0;
-            background: linear-gradient(to right, #0a0a1a, #1a1a3a, #0a0a1a);
-            border-bottom: 1px solid #2a2a5a;
-            margin-bottom: 30px;
-            border-radius: 10px;
-            position: relative;
             overflow: hidden;
+            min-height: 500px; /* 確保在載入模型時區塊不會塌陷 */
         }
 
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(to right, transparent, #00ffff, transparent);
-            animation: headerGlow 3s ease-in-out infinite alternate;
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        @keyframes headerGlow {
-            0% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
-
-        h1 {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, #00ffff, #ff00ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-            letter-spacing: 1px;
-            position: relative;
-            display: inline-block;
-        }
-
-        h1::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(to right, #00ffff, #ff00ff);
-            transform: scaleX(0);
-            transition: transform 0.5s ease;
-        }
-
-        h1:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-
-        .animation-section {
+        .hero__content {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 40px;
         }
 
-        .chip-container {
-            width: 100%;
-            height: 600px; 
-            background-color: #0f0f2a;
-            border: 1px solid #2a2a5a;
-            border-radius: 10px;
-            overflow: hidden;
+        .hero__title {
+            font-size: 2.8em;
+            font-weight: 700;
+            line-height: 1.2;
             margin-bottom: 20px;
-            position: relative;
-            box-shadow: 0 0 25px rgba(0, 100, 255, 0.3);
-            /* Ensure the container captures clicks */
-            cursor: pointer;
         }
 
+        .static-page__introduction-subtitle {
+            font-size: 1.1em;
+            max-width: 600px;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        /* 3D 模型容器 */
+        .hero__model {
+            width: 100%;
+            max-width: 800px; /* 限制模型最大寬度 */
+            height: 450px; 
+            margin: 40px 0;
+            position: relative;
+        }
+
+        /* <model-viewer> 樣式與進度條配置 */
         model-viewer {
             width: 100%;
             height: 100%;
-            background-color: #0f0f2a;
-        }
-        
-        .chip-overlay, .chip-controls, .chip-speed-indicator {
-            display: none !important; 
-        }
-
-        .code-editor-container {
-            width: 100%;
-            height: 200px;
-            background-color: #0a0a1a;
-            border: 1px solid #2a2a5a;
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 0 15px rgba(0, 200, 255, 0.2);
-            display: none; 
-        }
-
-        .code-header {
-            background: linear-gradient(to right, #1a1a3a, #2a2a5a);
-            padding: 8px 15px;
-            border-bottom: 1px solid #3a3a7a;
-            display: flex;
-            align-items: center;
-            font-family: monospace;
-            font-size: 0.9rem;
-            color: #a0a0ff;
-        }
-
-        .code-dots {
-            display: flex;
-            gap: 6px;
-            margin-right: 15px;
-        }
-
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .dot.red { background-color: #ff5f57; }
-        .dot.yellow { background-color: #ffbd2e; }
-        .dot.green { background-color: #28ca42; }
-
-        .code-body {
-            height: calc(100% - 40px);
-            padding: 15px;
-            overflow: hidden;
-            position: relative;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            color: #e0e0ff;
-            background-color: #0a0a2a;
-            line-height: 1.4;
-        }
-
-        .code-line {
-            display: flex;
-            margin-bottom: 2px;
-            opacity: 0;
-            animation: fadeInLine 0.5s forwards;
-        }
-
-        @keyframes fadeInLine {
-            to { opacity: 1; }
-        }
-
-        .line-number {
-            color: #6a6a8a;
-            margin-right: 15px;
-            min-width: 30px;
-            text-align: right;
-            user-select: none;
-        }
-
-        .code-content {
-            flex-grow: 1;
-            white-space: pre-wrap;
-        }
-
-        .keyword { color: #ff79c6; }
-        .function { color: #50fa7b; }
-        .variable { color: #8be9fd; }
-        .string { color: #f1fa8c; }
-        .number { color: #bd93f9; }
-        .comment { color: #6272a4; }
-        .operator { color: #ff79c6; }
-
-        .ai-optimization-complete {
-            display: none;
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(to right, #1a1a3a, #2a2a5a);
-            border: 1px solid #4a8aff;
-            border-radius: 10px;
-            margin-top: 20px;
-            box-shadow: 0 0 20px rgba(74, 138, 255, 0.3);
-        }
-
-        .ai-optimization-complete h3 {
-            color: #4a8aff;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-
-        .ai-optimization-complete p {
-            color: #e0e0ff;
-            font-size: 1.1rem;
-        }
-
-        .data-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 25px;
-            margin: 40px 0;
-        }
-
-        .project-section {
-            text-align: center;
-            margin: 20px 0;
-            padding: 20px;
-            background: linear-gradient(to right, #0f0f2a, #1a1a3a);
-            border-radius: 10px;
-            border: 1px solid #2a2a5a;
-            display: none; 
-        }
-
-        .project-id {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #4a8aff;
-            margin-bottom: 15px;
-            text-shadow: 0 0 10px rgba(74, 138, 255, 0.5);
-        }
-
-        .project-submit-btn {
-            padding: 12px 30px;
-            background: linear-gradient(to right, #2a5a7a, #3a7a9a);
-            color: #e0e0ff;
             border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1.1rem;
-            font-weight: 500;
+            
+            /* 進度條顏色: 使用 Sketchfab 的主藍色 */
+            --progress-bar-color: #1caad9; 
+            
+            /* 模型載入時的背景色（如果 poster 圖片尚未載入或不存在） */
+            --poster-color: #2e3644; 
         }
 
-        .project-submit-btn:hover {
-            background: linear-gradient(to right, #3a7a9a, #4a9aba);
-            box-shadow: 0 0 15px rgba(0, 200, 255, 0.5);
-            transform: translateY(-3px);
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: linear-gradient(to bottom, #1a1a3a, #0a0a2a);
-            width: 90%;
-            max-width: 700px;
-            border-radius: 10px;
-            border: 1px solid #4a4a8a;
-            box-shadow: 0 0 40px rgba(0, 100, 255, 0.5);
-            overflow: hidden;
-            transform: scale(0.9);
-            opacity: 0;
-            animation: modalAppear 0.3s forwards;
-        }
-
-        @keyframes modalAppear {
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .modal-header {
-            padding: 15px 20px;
-            background: linear-gradient(to right, #2a2a5a, #3a3a7a);
-            border-bottom: 1px solid #4a4a8a;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-title {
-            font-size: 1.3rem;
-            color: #e0e0ff;
-        }
-        
-        .modal-body {
-            padding: 20px;
-        }
-
-        .question {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: #e0e0ff;
-        }
-
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .option {
-            padding: 12px 15px;
-            background-color: #1a1a3a;
-            border: 1px solid #3a3a7a;
+        /* 按鈕樣式 */
+        .hero__button {
+            display: inline-block;
+            padding: 12px 30px;
             border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05em;
+            margin: 0 10px 10px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            border: none;
+            transition: background-color 0.3s;
         }
 
-        .option:hover {
-            background-color: #2a2a5a;
-            border-color: #5a5aaa;
+        .btn-primary {
+            background-color: #1caad9; 
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #1c88bb;
         }
 
-        .option.selected {
-            background-color: #2a5a7a;
-            border-color: #7abbe0;
+        .btn-important {
+            background-color: #ff9e3a; 
+            color: white;
         }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        footer {
-            text-align: center;
-            padding: 25px 0;
-            margin-top: 40px;
-            border-top: 1px solid #2a2a5a;
-            color: #8080c0;
-            font-size: 0.9rem;
-            position: relative;
-        }
-        
-        footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(to right, transparent, #00ffff, transparent);
+        .btn-important:hover {
+            background-color: #ff8507;
         }
 
         @media (max-width: 768px) {
-            h1 { font-size: 2.2rem; }
-            .chip-container { height: 400px; }
-            .data-section { grid-template-columns: 1fr; }
-            .code-editor-container { height: 180px; }
-            .code-body { font-size: 12px; padding: 10px; }
-            .project-id { font-size: 1.5rem; }
-            .modal-content { width: 95%; }
-            .modal-header { padding: 10px 15px; }
-            .modal-body { padding: 15px; }
-            .question { font-size: 1.1rem; }
-            .option { padding: 10px 12px; }
-        }
-
-        @media (max-width: 480px) {
-            h1 { font-size: 1.8rem; }
-            .chip-container { height: 300px; }
-            .code-editor-container { height: 150px; }
-            .code-body { font-size: 10px; }
-            .project-submit-btn { padding: 8px 15px; font-size: 0.85rem; }
-            .project-id { font-size: 1.3rem; }
-        }
-
-        @media (max-width: 360px) {
-            .container { padding: 10px; }
-            h1 { font-size: 1.5rem; }
-            .chip-container { height: 250px; }
-            .code-editor-container { height: 130px; }
-            .project-id { font-size: 1.2rem; }
+            .hero__title {
+                font-size: 2em;
+            }
+            .hero__model {
+                height: 300px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>AI Semiconductor Manufacturing Process</h1>
-        </header>
 
-        <section class="animation-section">
-            <div class="chip-container">
-                <model-viewer 
-                    id="chipViewer" 
-                    src="https://huggingface.co/dgplay001/ai-chip-model/resolve/main/AIC.glb" 
-                    alt="Semiconductor AIC Model"
-                    shadow-intensity="1"
-                    camera-controls
-                    auto-rotate
-                    autoplay
-                    exposure="1.2"
-                    shadow-softness="0.5"
-                    interaction-prompt="none"
-                >
-                </model-viewer>
-            </div>
-            
-            <div class="code-editor-container" id="codeEditor">
-                <div class="code-header">
-                    <div class="code-dots">
-                        <div class="dot red"></div>
-                        <div class="dot yellow"></div>
-                        <div class="dot green"></div>
-                    </div>
-                    <span>ai_process_optimization.js</span>
+    <div class="hero">
+        
+        <div class="hero-container">
+            <div class="hero__content">
+                <div class="hero__text">
+                    <h1 class="hero__title">
+                        The leading platform<br>for 3D &amp; AR on the web
+                    </h1>
+                    <p class="static-page__introduction-subtitle">
+                        Manage your 3D assets. Distribute 3D &amp; AR experiences. Collaborate with others. Showcase your work.
+                    </p>
+                    
+                    <button class="button btn-primary btn-large hero__button" onclick="alert('Join for Free Action!')">
+                        JOIN FOR FREE
+                    </button>
+                    <a class="button btn-important btn-large hero__button" href="/plans?ref=home_page">
+                        SEE PLANS
+                    </a>
                 </div>
-                <div class="code-body" id="codeBody">
-                </div>
-            </div>
-            
-            <div class="ai-optimization-complete" id="aiOptimizationComplete">
-                <h3>製程優化中</h3>
-                <p>請依指示優化製程</p>
-            </div>
-
-            <div class="project-section" id="projectSection">
-                <div class="project-id" id="projectId">Ai-Mod-202511-00001</div>
-                <button id="submitProject" class="project-submit-btn">確認提交</button>
-            </div>
-        </section>
-
-        <section class="tab-content active" id="tables-tab">
-            <div class="data-section">
-            </div>
-        </section>
-
-        <footer>
-            <p>AI Semiconductor Manufacturing Process &copy;</p>
-        </footer>
-    </div>
-
-    <div id="quizModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title" id="quizTitle">AI Process Optimization Selection</div>
-            </div>
-            <div class="modal-body">
-                <div class="question" id="question">Please select your preferred optimization approach:</div>
-                <div class="options" id="options">
+                
+                <div class="hero__model">
+                    <model-viewer 
+                        src="https://openai9315.com/ai_cpu_concept_fbx.glb" 
+                        alt="..."
+                        poster="https://via.placeholder.com/800x450/184c7e/FFFFFF?text=3D+Model+Preview" 
+                        camera-controls 
+                        auto-rotate 
+                        shadow-intensity="1"
+                        environment-image="neutral"
+                        loading="auto"
+                        exposure="1.2"
+                    >
+                    </model-viewer>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // --- Configuration & State ---
-        const MAX_CLICKS = 3;
-        const CLICK_TIMEOUT = 500; 
-        const QUIZ_IDS = ['quiz1', 'quiz2', 'quiz3', 'quiz4'];
-        
-        let clickCount = 0;
-        let clickTimer = null;
-        let currentQuizIndex = 0; 
-        let projectCounter = 1; 
-        let typingInterval;
-        
-        const quizData = {
-            quiz1: {
-                title: "EDA Process Optimization",
-                question: "Select preferred EDA optimization approach:",
-                options: ["A. Logic Synthesis Optimization", "B. Physical Design Optimization", "C. Timing Analysis Optimization", "D. Power Optimization"]
-            },
-            quiz2: {
-                title: "FEOKL Process Optimization",
-                question: "Select preferred FEOKL optimization approach:",
-                options: ["A. Feature Extraction Optimization", "B. Knowledge Learning Optimization", "C. Model Training Optimization", "D. Inference Acceleration"]
-            },
-            quiz3: {
-                title: "YLELD Process Optimization",
-                question: "Select preferred YLELD optimization approach:",
-                options: ["A. Yield Prediction Optimization", "B. Defect Analysis Optimization", "C. Process Control Optimization", "D. Quality Assurance Optimization"]
-            },
-            quiz4: {
-                title: "P&T Process Optimization",
-                question: "Select preferred P&T optimization approach:",
-                options: ["A. Performance Optimization", "B. Thermal Management Optimization", "C. Power-Performance Trade-off", "D. Reliability Optimization"]
-            }
-        };
-
-        let currentQuiz = null;
-        let codeEditorInstance; 
-
-        // --- Functions ---
-
-        // 1. Code Typing Animation
-        function initCodeEditor() {
-            const codeBody = document.getElementById('codeBody');
-            const codeSnippets = [
-                `class AISemiconductorProcess {\n  optimize() {\n    console.log('Optimizing process nodes...');\n    this.yield += 0.02;\n    return this.yield;\n  }\n}`,
-                `// Training Neural Network\nconst model = tf.sequential();\nmodel.add(tf.layers.dense({units: 128, activation: 'relu'}));\nmodel.compile({loss: 'mse'});\nconsole.log('Training started...');`,
-                `// Defect Detection Algorithm\nfunction scanWafer(surface) {\n  let defects = surface.findAnomalies();\n  return defects.length > 0 ? 'Flagged' : 'Pass';\n}\nconsole.log('Scan complete.');`,
-                `// Thermal Regulation\nif (temp > CRITICAL_LIMIT) {\n  activateCoolingSystem();\n  throttlePerformance(0.9);\n} else {\n  maintainState();\n}\nconsole.log('Thermal check OK.');`
-            ];
-            
-            let currentLine = 0;
-            let codeLines = [];
-
-            function parseCodeSnippet(snippet) { return snippet.split('\n'); }
-            
-            function highlightCode(line) {
-                return line
-                    .replace(/\b(class|const|let|var|function|return|if|else|new|this)\b/g, '<span class="keyword">$1</span>')
-                    .replace(/('.*?')/g, '<span class="string">$1</span>')
-                    .replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>')
-                    .replace(/\/\/.*/g, '<span class="comment">$&</span>');
-            }
-            
-            function typeNextLine() {
-                if (currentLine < codeLines.length) {
-                    const lineElement = document.createElement('div');
-                    lineElement.className = 'code-line';
-                    const lineNumber = document.createElement('span');
-                    lineNumber.className = 'line-number';
-                    lineNumber.textContent = (currentLine + 1).toString();
-                    const codeContent = document.createElement('span');
-                    codeContent.className = 'code-content';
-                    codeContent.innerHTML = highlightCode(codeLines[currentLine]);
-                    lineElement.appendChild(lineNumber);
-                    lineElement.appendChild(codeContent);
-                    codeBody.appendChild(lineElement);
-                    codeBody.scrollTop = codeBody.scrollHeight;
-                    currentLine++;
-                } else {
-                    clearInterval(typingInterval);
-                    setTimeout(() => {
-                        document.getElementById('codeEditor').style.display = 'none';
-                        document.getElementById('aiOptimizationComplete').style.display = 'block';
-                        
-                        setTimeout(() => {
-                             document.getElementById('aiOptimizationComplete').style.display = 'none';
-                             document.getElementById('projectSection').style.display = 'block';
-                        }, 1500);
-                    }, 800);
-                }
-            }
-            
-            function startTyping() {
-                clearInterval(typingInterval);
-                codeBody.innerHTML = '';
-                currentLine = 0;
-                const snippetIndex = currentQuizIndex % codeSnippets.length;
-                codeLines = parseCodeSnippet(codeSnippets[snippetIndex]);
-                typingInterval = setInterval(typeNextLine, 100); 
-            }
-            
-            return { startTyping: startTyping };
-        }
-
-        // 2. Reset 3D Model View
-        function resetModelView() {
-            const modelViewer = document.getElementById('chipViewer');
-            if (modelViewer) {
-                modelViewer.cameraOrbit = '0deg 75deg 105%';
-                modelViewer.cameraTarget = 'auto';
-                modelViewer.setAttribute('auto-rotate', 'true');
-            }
-        }
-
-        // 3. Update Project ID Display
-        function updateProjectIdDisplay() {
-            const projectIdElement = document.getElementById('projectId');
-            const counterStr = projectCounter.toString().padStart(5, '0');
-            projectIdElement.textContent = `Ai-Mod-202511-${counterStr}`;
-        }
-        
-        // 4. Submit Project Logic
-        function submitProject() {
-            const submitBtn = document.getElementById('submitProject');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = '提交成功';
-            
-            setTimeout(() => {
-                document.getElementById('projectSection').style.display = 'none';
-                submitBtn.textContent = originalText;
-                
-                projectCounter++;
-                updateProjectIdDisplay();
-                
-                currentQuizIndex = (currentQuizIndex + 1) % QUIZ_IDS.length;
-                
-                resetModelView();
-                clickCount = 0;
-                
-            }, 1500);
-        }
-
-        // 5. Show Quiz Modal
-        function showQuiz() {
-            const quizId = QUIZ_IDS[currentQuizIndex];
-            currentQuiz = quizData[quizId];
-            
-            document.getElementById('quizTitle').textContent = currentQuiz.title;
-            document.getElementById('question').textContent = currentQuiz.question;
-            
-            const optionsContainer = document.getElementById('options');
-            optionsContainer.innerHTML = '';
-            
-            currentQuiz.options.forEach((option, index) => {
-                const optionElement = document.createElement('div');
-                optionElement.className = 'option';
-                optionElement.textContent = option;
-                optionElement.dataset.index = index;
-                
-                optionElement.addEventListener('click', function() {
-                    document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
-                    this.classList.add('selected');
-                    
-                    setTimeout(() => {
-                        document.getElementById('quizModal').style.display = 'none';
-                        document.getElementById('codeEditor').style.display = 'block';
-                        codeEditorInstance.startTyping();
-                    }, 1500);
-                });
-                
-                optionsContainer.appendChild(optionElement);
-            });
-            
-            document.getElementById('quizModal').style.display = 'flex';
-            
-            const modelViewer = document.getElementById('chipViewer');
-            if(modelViewer) modelViewer.removeAttribute('auto-rotate');
-        }
-
-        // --- Initialization ---
-        window.addEventListener('load', function() {
-            codeEditorInstance = initCodeEditor();
-            updateProjectIdDisplay();
-            
-            document.getElementById('submitProject').addEventListener('click', submitProject);
-            
-            // *** FIX: Listen on the CONTAINER (div) instead of the viewer, and use capture phase ***
-            const chipContainer = document.querySelector('.chip-container');
-            
-            if (chipContainer) {
-                // The 'true' here enables event capturing, which intercepts the click before model-viewer can swallow it.
-                chipContainer.addEventListener('click', (event) => {
-                    // Prevent triggering if UI overlays are active
-                    if (document.getElementById('quizModal').style.display === 'flex' || 
-                        document.getElementById('codeEditor').style.display === 'block' ||
-                        document.getElementById('projectSection').style.display === 'block') {
-                        return;
-                    }
-
-                    if (clickTimer) clearTimeout(clickTimer);
-
-                    clickCount++;
-                    console.log(`Click count: ${clickCount}`); // Check your console (F12) to verify this updates
-
-                    if (clickCount >= MAX_CLICKS) {
-                        showQuiz();
-                        clickCount = 0; 
-                    } else {
-                        clickTimer = setTimeout(() => {
-                            clickCount = 0;
-                            console.log("Click count reset due to timeout");
-                        }, CLICK_TIMEOUT);
-                    }
-                }, true); // <--- IMPORTANT: Capture phase enabled
-            }
-        });
-    </script>
 </body>
 </html>
